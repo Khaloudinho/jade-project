@@ -3,9 +3,7 @@ package metier;
 import org.hibernate.annotations.GenericGenerator;
 import util.EtatReservation;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Date;
 
@@ -21,6 +19,7 @@ public class Reservation implements Serializable {
 
     private Date dateLimite;
 
+    @Enumerated(EnumType.STRING)
     private EtatReservation etatReservation;
 
     public Reservation() {}
