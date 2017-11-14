@@ -1,5 +1,4 @@
 .idea/
 target/
-*.properties
 *.iml
 *.txt
