@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 import metier.Vol;
 import util.TypeVol;
+=======
+import metier.Abonnement;
+>>>>>>> f8fdd42b4e882a570dca86370d075d81e341c58d
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -15,6 +19,7 @@ public class Seeder {
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
 
+<<<<<<< HEAD
         Set<Vol> vols = new HashSet<Vol>();
         Date dateDepart = new Date (2017, 01, 01);
         Date dateDepartVolsRegulier = new Date (2017, 01, 01);
@@ -44,7 +49,15 @@ public class Seeder {
 
 
 
+=======
+        Abonnement ab = new Abonnement("Abonnement 1", 15095.82f);
+        Abonnement ab2 = new Abonnement("Abonnement 2", 18795.82f);
+        Abonnement ab3 = new Abonnement("Abonnement 3", 19595.82f);
+>>>>>>> f8fdd42b4e882a570dca86370d075d81e341c58d
 
+        em.persist(ab);
+        em.persist(ab2);
+        em.persist(ab3);
 
         em.getTransaction().commit();
         em.close();
