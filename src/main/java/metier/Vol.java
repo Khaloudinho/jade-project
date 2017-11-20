@@ -3,11 +3,9 @@ package metier;
 import org.hibernate.annotations.GenericGenerator;
 import util.TypeVol;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
+import java.sql.Date;
 
 @Entity
 public class Vol implements Serializable {
@@ -17,10 +15,23 @@ public class Vol implements Serializable {
     private String idVol;
     private Date dateDepart;
     private Date dateArrivee;
+    @Enumerated(EnumType.STRING)
     private TypeVol typeVol;
     private String idBaseTarif;
     private String idAvion;
     private String idLieuArrivee;
+
+    public Vol() {
+    }
+
+    public Vol(Date dateDepart, Date dateArrivee, TypeVol typeVol, String idBaseTarif, String idAvion, String idLieuArrivee) {
+        this.dateDepart = dateDepart;
+        this.dateArrivee = dateArrivee;
+        this.typeVol = typeVol;
+        this.idBaseTarif = idBaseTarif;
+        this.idAvion = idAvion;
+        this.idLieuArrivee = idLieuArrivee;
+    }
 
     public String getIdVol() {
         return idVol;
