@@ -1,3 +1,4 @@
+import metier.Abonne;
 import metier.Vol;
 import util.TypeVol;
 import metier.Abonnement;
@@ -16,7 +17,7 @@ public class Seeder {
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
 
-        Set<Vol> vols = new HashSet<Vol>();
+        Set<Vol> vols = new HashSet<>();
         Date dateDepart = new Date (2017, 01, 01);
         Date dateDepartVolsRegulier = new Date (2017, 01, 01);
 
@@ -34,18 +35,22 @@ public class Seeder {
         vols.add(v3);
         vols.add(v4);
 
-        for (Vol vol:
-             vols) {
+        for (Vol vol: vols) {
             em.persist(vol);
         }
 
+        Set<Abonnement> abonnements = new HashSet<>();
         Abonnement ab = new Abonnement("Abonnement 1", 15095.82f);
         Abonnement ab2 = new Abonnement("Abonnement 2", 18795.82f);
         Abonnement ab3 = new Abonnement("Abonnement 3", 19595.82f);
 
-        em.persist(ab);
-        em.persist(ab2);
-        em.persist(ab3);
+        abonnements.add(ab);
+        abonnements.add(ab2);
+        abonnements.add(ab3);
+
+        for (Abonnement abo : abonnements) {
+            em.persist(abo);
+        }
 
         em.getTransaction().commit();
         em.close();
