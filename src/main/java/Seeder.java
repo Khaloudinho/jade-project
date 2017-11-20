@@ -11,7 +11,7 @@ import java.util.Set;
 
 public class Seeder {
     public static void main(String [] args){
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("tpersistancePU");
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("jadeprojectPU");
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
 
