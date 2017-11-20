@@ -17,8 +17,18 @@ public class Avion implements Serializable {
     private String immatriculation;
     private int capaciteSoute;
     private int autonomie;
-    private int consomationCarburant;
+    private int consommationCarburant;
     private int capaciteLibre;
+
+    public Avion() {}
+
+    public Avion(String immatriculation, int capaciteSoute, int autonomie, int consommationCarburant, int capaciteLibre) {
+        this.immatriculation = immatriculation;
+        this.capaciteSoute = capaciteSoute;
+        this.autonomie = autonomie;
+        this.consommationCarburant = consommationCarburant;
+        this.capaciteLibre = capaciteLibre;
+    }
 
     public String getIdAvion() {
         return idAvion;
@@ -52,12 +62,12 @@ public class Avion implements Serializable {
         this.autonomie = autonomie;
     }
 
-    public int getConsomationCarburant() {
-        return consomationCarburant;
+    public int getConsommationCarburant() {
+        return consommationCarburant;
     }
 
-    public void setConsomationCarburant(int consomationCarburant) {
-        this.consomationCarburant = consomationCarburant;
+    public void setConsommationCarburant(int consomationCarburant) {
+        this.consommationCarburant = consomationCarburant;
     }
 
     public int getCapaciteLibre() {

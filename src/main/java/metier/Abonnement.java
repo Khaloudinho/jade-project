@@ -15,15 +15,15 @@ public class Abonnement implements Serializable {
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String idAbonnement;
 
-    private String nom;
+    private String nomAbonnement;
 
     private float prixAbonnement;
 
     public Abonnement() {}
 
-    public Abonnement(String nom, float prixAbonnement) {
-        this.nom = nom;
-        this.prixAbonnement = prixAbonnement;
+    public Abonnement(String nom, float prix) {
+        this.nomAbonnement = nom;
+        this.prixAbonnement = prix;
     }
 
     public String getIdAbonnement() {
@@ -35,18 +35,18 @@ public class Abonnement implements Serializable {
     }
 
     public String getNom() {
-        return nom;
+        return nomAbonnement;
     }
 
     public void setNom(String nom) {
-        this.nom = nom;
+        this.nomAbonnement = nom;
     }
 
     public float getPrixAbonnement() {
         return prixAbonnement;
     }
 
-    public void setPrixAbonnement(float prixAbonnement) {
-        this.prixAbonnement = prixAbonnement;
+    public void setPrixAbonnement(float prix) {
+        this.prixAbonnement = prix;
     }
 }

@@ -5,6 +5,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import java.io.Serializable;
 
 @Entity
@@ -16,6 +17,9 @@ public class Aeroport implements Serializable {
     private String idAeroport;
     private String nomAeroport;
     private int taxeAeroport;
+
+    @OneToOne
+    private Lieu lieu;
 
     public String getIdAeroport() {
         return idAeroport;
@@ -39,5 +43,13 @@ public class Aeroport implements Serializable {
 
     public void setTaxeAeroport(int taxeAeroport) {
         this.taxeAeroport = taxeAeroport;
+    }
+
+    public Lieu getLieu() {
+        return lieu;
+    }
+
+    public void setLieu(Lieu lieu) {
+        this.lieu = lieu;
     }
 }

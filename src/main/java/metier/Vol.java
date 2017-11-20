@@ -15,22 +15,29 @@ public class Vol implements Serializable {
     private String idVol;
     private Date dateDepart;
     private Date dateArrivee;
+
     @Enumerated(EnumType.STRING)
     private TypeVol typeVol;
-    private String idBaseTarif;
-    private String idAvion;
-    private String idLieuArrivee;
+
+    @OneToOne
+    private BaseTarif baseTarif;
+
+    @OneToOne
+    private Avion avion;
+
+    @OneToOne
+    private Lieu lieuArrivee;
 
     public Vol() {
     }
 
-    public Vol(Date dateDepart, Date dateArrivee, TypeVol typeVol, String idBaseTarif, String idAvion, String idLieuArrivee) {
+public Vol(Date dateDepart, Date dateArrivee, TypeVol typeVol, BaseTarif baseTarif, Avion avion, Lieu lieuArrivee) {
         this.dateDepart = dateDepart;
         this.dateArrivee = dateArrivee;
         this.typeVol = typeVol;
-        this.idBaseTarif = idBaseTarif;
-        this.idAvion = idAvion;
-        this.idLieuArrivee = idLieuArrivee;
+        this.baseTarif = baseTarif;
+        this.avion = avion;
+        this.lieuArrivee = lieuArrivee;
     }
 
     public String getIdVol() {
@@ -65,27 +72,27 @@ public class Vol implements Serializable {
         this.typeVol = typeVol;
     }
 
-    public String getIdBaseTarif() {
-        return idBaseTarif;
+    public BaseTarif getBaseTarif() {
+        return baseTarif;
     }
 
-    public void setIdBaseTarif(String idBaseTarif) {
-        this.idBaseTarif = idBaseTarif;
+    public void setBaseTarif(BaseTarif baseTarif) {
+        this.baseTarif = baseTarif;
     }
 
-    public String getIdAvion() {
-        return idAvion;
+    public Avion getAvion() {
+        return avion;
     }
 
-    public void setIdAvion(String idAvion) {
-        this.idAvion = idAvion;
+    public void setAvion(Avion avion) {
+        this.avion = avion;
     }
 
-    public String getIdLieuArrivee() {
-        return idLieuArrivee;
+    public Lieu getLieuArrivee() {
+        return lieuArrivee;
     }
 
-    public void setIdLieuArrivee(String idLieuArrivee) {
-        this.idLieuArrivee = idLieuArrivee;
+    public void setLieuArrivee(Lieu lieuArrivee) {
+        this.lieuArrivee = lieuArrivee;
     }
 }

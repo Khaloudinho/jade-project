@@ -1,13 +1,9 @@
-import metier.Abonne;
-import metier.Aeroport;
-import metier.Vol;
+import metier.*;
 import util.TypeVol;
-import metier.Abonnement;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import java.util.ArrayList;
 import java.sql.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -19,42 +15,103 @@ public class Seeder {
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
 
-        Set<Vol> vols = new HashSet<>();
-        Date dateDepart = new Date(2017, 01, 01);
-        Date dateDepartVolsRegulier = new Date(2017, 01, 01);
+        Set<Lieu> lieux = new HashSet<>();
+        Lieu l1 = new Lieu("Conakry", "Guinee");
+        Lieu l2 = new Lieu("Dakar", "Senegal");
+        Lieu l3 = new Lieu("Banjul", "Gambie");
+        Lieu l4 = new Lieu("Abidjan", "Cote d'ivoire");
+        Lieu l5 = new Lieu("Douala", "Cameroun");
+        Lieu l6 = new Lieu("Gaborone", "Bostwana");
 
+        lieux.add(l1);
+        lieux.add(l2);
+        lieux.add(l3);
+        lieux.add(l4);
+        lieux.add(l5);
+        lieux.add(l6);
+
+        for (Lieu lieu : lieux) {
+            em.persist(lieu);
+        }
+
+        Set<Avion> avions = new HashSet<>();
+        Avion av1 = new Avion("AF9-151-PKL", 1500, 1420, 55, 56);
+        Avion av2 = new Avion("GF6-051-PPP", 1900, 920, 65, 88);
+        Avion av3 = new Avion("FR4-401-ZKK", 2600, 1520, 75, 120);
+        Avion av4 = new Avion("GB2-398-WYR", 1800, 2100, 85, 99);
+
+        avions.add(av1);
+        avions.add(av2);
+        avions.add(av3);
+        avions.add(av4);
+
+        for (Avion avion : avions){
+            em.persist(avion);
+        }
+
+        Date dateDepart = Date.valueOf("2017-01-01");
+        Date dateDepartVolsReguliers = Date.valueOf("2017-03-11");
+        Date dateArrivee = Date.valueOf("2017-05-16");
+        Date dateArriveeVolsReguliers = Date.valueOf("2017-06-17");
+
+        Set<Aeroport> aeroports = new HashSet<>();
         Aeroport a1 = new Aeroport();
-        a1.setNomAeroport("Aéroport international de Conakry");
+        a1.setNomAeroport("Aéroport international de Conakry"); // Guinee
         a1.setTaxeAeroport((int)(Math.random() * 1000 + 150));
+        a1.setLieu(l1);
 
         Aeroport a2 = new Aeroport();
-        a2.setNomAeroport("Aéroport international Léopold-Sédar-Senghor");
+        a2.setNomAeroport("Aéroport international Léopold-Sédar-Senghor"); // Senegal
         a2.setTaxeAeroport((int)(Math.random() * 1000 + 150));
+        a2.setLieu(l2);
 
         Aeroport a3 = new Aeroport();
-        a3.setNomAeroport("Aéroport international de Banjul - Yundum");
+        a3.setNomAeroport("Aéroport international de Banjul - Yundum"); // Gambie
         a3.setTaxeAeroport((int)(Math.random() * 1000 + 150));
+        a3.setLieu(l3);
 
         Aeroport a4 = new Aeroport();
-        a4.setNomAeroport("Aéroport international Félix-Houphouët-Boigny ");
+        a4.setNomAeroport("Aéroport international Félix-Houphouët-Boigny"); // Cote ivoire
         a4.setTaxeAeroport((int)(Math.random() * 1000 + 150));
+        a4.setLieu(l4);
 
         Aeroport a5 = new Aeroport();
-        a5.setNomAeroport("Aéroport international de Douala");
+        a5.setNomAeroport("Aéroport international de Douala"); // Cameroun
         a5.setTaxeAeroport((int)(Math.random() * 1000 + 150));
+        a5.setLieu(l5);
 
         Aeroport a6 = new Aeroport();
-        a6.setNomAeroport("Aéroport international de Gaborone");
+        a6.setNomAeroport("Aéroport international de Gaborone"); // Bostwana
         a6.setTaxeAeroport((int)(Math.random() * 1000 + 150));
+        a6.setLieu(l6);
 
+        aeroports.add(a1);
+        aeroports.add(a2);
+        aeroports.add(a3);
+        aeroports.add(a4);
+        aeroports.add(a5);
+        aeroports.add(a6);
 
-        Date dateArrivee = new Date (2017, 01, 01);
-        Date dateArriveeVolsRegulier = new Date (2017, 01, 01);
+        for (Aeroport aeroport : aeroports) {
+            em.persist(aeroport);
+        }
 
-        Vol v1 = new Vol(dateDepart, dateArrivee, TypeVol.charters, "1", "AFX-508-RF", "1");
-        Vol v2 = new Vol(dateDepart, dateArrivee, TypeVol.charters, "1", "AFX-508-RF", "1");
-        Vol v3 = new Vol(dateDepartVolsRegulier, dateArrivee, TypeVol.regulier, "2", "AFF-508-RF", "1");
-        Vol v4 = new Vol(dateDepartVolsRegulier, dateArriveeVolsRegulier, TypeVol.regulier, "2", "AFF-508-RF", "2");
+        Set<BaseTarif> baseTarifs = new HashSet<>();
+        BaseTarif bt = new BaseTarif("Base tarifaire vols charters", 1652);
+        BaseTarif bt2 = new BaseTarif("Base tarifaire vols réguliers", 1992);
+
+        baseTarifs.add(bt);
+        baseTarifs.add(bt2);
+
+        for (BaseTarif baseTarif : baseTarifs){
+            em.persist(baseTarif);
+        }
+
+        Set<Vol> vols = new HashSet<>();
+        Vol v1 = new Vol(dateDepart, dateArrivee, TypeVol.charter, bt, av1, l1);
+        Vol v2 = new Vol(dateDepart, dateArrivee, TypeVol.charter, bt, av2, l3);
+        Vol v3 = new Vol(dateDepartVolsReguliers, dateArriveeVolsReguliers, TypeVol.regulier, bt2, av3, l4);
+        Vol v4 = new Vol(dateDepartVolsReguliers, dateArriveeVolsReguliers, TypeVol.regulier, bt2, av4, l5);
 
         vols.add(v1);
         vols.add(v2);

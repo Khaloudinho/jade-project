@@ -15,12 +15,15 @@ public class BaseTarif implements Serializable {
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String idBaseTarif;
 
+    private String typeBaseTarif;
+
     private float prixReference;
 
     public BaseTarif() {}
 
-    public BaseTarif(float prixReference) {
-        this.prixReference = prixReference;
+    public BaseTarif(String type, float prix) {
+        this.typeBaseTarif = type;
+        this.prixReference = prix;
     }
 
     public String getIdBaseTarif() {
@@ -29,6 +32,14 @@ public class BaseTarif implements Serializable {
 
     public void setIdBaseTarif(String idBaseTarif) {
         this.idBaseTarif = idBaseTarif;
+    }
+
+    public String getTypeBaseTarif() {
+        return typeBaseTarif;
+    }
+
+    public void setTypeBaseTarif(String typeBaseTarif) {
+        this.typeBaseTarif = typeBaseTarif;
     }
 
     public float getPrixReference() {

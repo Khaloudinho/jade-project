@@ -1,5 +1,5 @@
 package util;
 
 public enum TypeVol {
-    charters, regulier;
+    charter, regulier;
 }

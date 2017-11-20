@@ -5,6 +5,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import java.io.Serializable;
 
 @Entity
@@ -14,7 +15,16 @@ public class Abonne implements Serializable {
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String idAbonnee;
     private int numeroSiret;
-    private String idAbonnement;
+
+    @OneToOne
+    private Abonnement abonnement;
+
+    public Abonne() {}
+
+    public Abonne(int numeroSiret, Abonnement abonnement) {
+        this.numeroSiret = numeroSiret;
+        this.abonnement = abonnement;
+    }
 
     public String getIdAbonnee() {
         return idAbonnee;
@@ -32,11 +42,11 @@ public class Abonne implements Serializable {
         this.numeroSiret = numeroSiret;
     }
 
-    public String getIdAbonnement() {
-        return idAbonnement;
+    public Abonnement getAbonnement() {
+        return abonnement;
     }
 
-    public void setIdAbonnement(String idAbonnement) {
-        this.idAbonnement = idAbonnement;
+    public void setAbonnement(Abonnement abonnement) {
+        this.abonnement = abonnement;
     }
 }
