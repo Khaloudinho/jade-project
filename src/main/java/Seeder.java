@@ -18,15 +18,14 @@ public class Seeder {
         em.getTransaction().begin();
 
         Set<Vol> vols = new HashSet<>();
-        Date dateDepart = new Date (2017, 01, 01);
-        Date dateDepartVolsRegulier = new Date (2017, 01, 01);
+        Date dateDepart = new Date(2017, 01, 01);
+        Date dateDepartVolsRegulier = new Date(2017, 01, 01);
 
-        Date dateArrivee = new Date (2017, 01, 01);
-        Date dateArriveeVolsRegulier = new Date (2017, 01, 01);
+        Date dateArrivee = new Date(2017, 01, 01);
+        Date dateArriveeVolsRegulier = new Date(2017, 01, 01);
 
         Vol v1 = new Vol(dateDepart, dateArrivee, TypeVol.charters, "1", "AFX-508-RF", "1");
         Vol v2 = new Vol(dateDepart, dateArrivee, TypeVol.charters, "1", "AFX-508-RF", "1");
-
         Vol v3 = new Vol(dateDepartVolsRegulier, dateArrivee, TypeVol.regulier, "2", "AFF-508-RF", "1");
         Vol v4 = new Vol(dateDepartVolsRegulier, dateArriveeVolsRegulier, TypeVol.regulier, "2", "AFF-508-RF", "2");
 
@@ -35,7 +34,7 @@ public class Seeder {
         vols.add(v3);
         vols.add(v4);
 
-        for (Vol vol: vols) {
+        for (Vol vol : vols) {
             em.persist(vol);
         }
 
