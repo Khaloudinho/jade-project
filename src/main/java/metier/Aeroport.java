@@ -17,9 +17,20 @@ public class Aeroport implements Serializable {
     private String idAeroport;
     private String nomAeroport;
     private int taxeAeroport;
+    private int heuresVolDepuisParis;
 
     @OneToOne
     private Lieu lieu;
+
+    public Aeroport() {
+    }
+
+    public Aeroport(String nomAeroport, int taxeAeroport, int heuresVolDepuisParis, Lieu lieu) {
+        this.nomAeroport = nomAeroport;
+        this.taxeAeroport = taxeAeroport;
+        this.heuresVolDepuisParis = heuresVolDepuisParis;
+        this.lieu = lieu;
+    }
 
     public String getIdAeroport() {
         return idAeroport;
@@ -51,5 +62,13 @@ public class Aeroport implements Serializable {
 
     public void setLieu(Lieu lieu) {
         this.lieu = lieu;
+    }
+
+    public int getHeuresVolDepuisParis() {
+        return heuresVolDepuisParis;
+    }
+
+    public void setHeuresVolDepuisParis(int heuresVolDepuisParis) {
+        this.heuresVolDepuisParis = heuresVolDepuisParis;
     }
 }

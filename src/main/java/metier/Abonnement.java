@@ -17,11 +17,11 @@ public class Abonnement implements Serializable {
 
     private String nomAbonnement;
 
-    private float prixAbonnement;
+    private double prixAbonnement;
 
     public Abonnement() {}
 
-    public Abonnement(String nom, float prix) {
+    public Abonnement(String nom, double prix) {
         this.nomAbonnement = nom;
         this.prixAbonnement = prix;
     }
@@ -42,11 +42,11 @@ public class Abonnement implements Serializable {
         this.nomAbonnement = nom;
     }
 
-    public float getPrixAbonnement() {
+    public double getPrixAbonnement() {
         return prixAbonnement;
     }
 
-    public void setPrixAbonnement(float prix) {
+    public void setPrixAbonnement(double prix) {
         this.prixAbonnement = prix;
     }
 }

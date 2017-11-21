@@ -8,12 +8,15 @@ import java.io.Serializable;
 import java.sql.Date;
 
 @Entity
-@NamedQueries({
-        @NamedQuery(
-                //Trouver les vols pour un pays donner à une date donnée
-                name = "query1",
-                query = "select v.id from Vol v where v.dateDepart= '2017-01-01' and v.lieuArrivee.pays = 'Guinee' and v.avion.capaciteLibre>= 10 ")
-})
+@NamedQuery(
+                // Trouver les vols pour un pays donné à une date donnée
+                name = "Vol.getVolsCorrespondantsALaDemande",
+                query = "SELECT v.id " +
+                        "FROM Vol v " +
+                        "WHERE v.dateDepart = :date " +
+                        "AND v.aeroportArrivee.lieu.pays = :pays " +
+                        "AND v.avion.capaciteLibre >= :capaciteLibre "
+)
 
 public class Vol implements Serializable {
 
@@ -35,19 +38,19 @@ public class Vol implements Serializable {
     private Avion avion;
 
     @OneToOne
-    private Lieu lieuArrivee;
+    private Aeroport aeroportArrivee;
 
     public Vol() {
     }
 
-    public Vol(Date dateDepart, Date dateArrivee, TypeVol typeVol, BaseTarif baseTarif, Avion avion, Lieu lieuArrivee, double prix) {
+    public Vol(Date dateDepart, Date dateArrivee, TypeVol typeVol, BaseTarif baseTarif, Avion avion, Aeroport aeroportArrivee) {
         this.dateDepart = dateDepart;
         this.dateArrivee = dateArrivee;
         this.typeVol = typeVol;
         this.baseTarif = baseTarif;
         this.avion = avion;
-        this.lieuArrivee = lieuArrivee;
-        this.prixVol = prix;
+        this.aeroportArrivee = aeroportArrivee;
+        this.prixVol = 0;
     }
 
     public String getIdVol() {
@@ -98,12 +101,12 @@ public class Vol implements Serializable {
         this.avion = avion;
     }
 
-    public Lieu getLieuArrivee() {
-        return lieuArrivee;
+    public Aeroport getAeroportArrivee() {
+        return aeroportArrivee;
     }
 
-    public void setLieuArrivee(Lieu lieuArrivee) {
-        this.lieuArrivee = lieuArrivee;
+    public void setAeroportArrivee(Aeroport aeroportArrivee) {
+        this.aeroportArrivee = aeroportArrivee;
     }
 
     public double getPrixVol() {
