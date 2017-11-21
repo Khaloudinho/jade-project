@@ -41,7 +41,7 @@ public class SenderBehavior extends SimpleBehaviour{
         AvionImpl ai = new AvionImpl();
         BaseTarifImpl bi = new BaseTarifImpl();
 
-        Vol v1 = new Vol(dateDepart, dateArrivee, TypeVol.charter, bi.getBaseTarifParNom("charter"), ai.getAvionParImmatriculation("GB2-398-WYR"), li.getLieuParVille("Douala"));
+        Vol v1 = new Vol(dateDepart, dateArrivee, TypeVol.Charter, bi.getBaseTarifParNom("charter"), ai.getAvionParImmatriculation("GB2-398-WYR"), li.getLieuParVille("Douala"));
 
         //String message = "Coucou, voila l'objet dont je te parlais.";
         ACLMessage aclMessage = new ACLMessage(ACLMessage.INFORM);

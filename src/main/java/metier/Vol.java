@@ -15,6 +15,7 @@ public class Vol implements Serializable {
     private String idVol;
     private Date dateDepart;
     private Date dateArrivee;
+    private double prixVol;
 
     @Enumerated(EnumType.STRING)
     private TypeVol typeVol;
@@ -31,13 +32,14 @@ public class Vol implements Serializable {
     public Vol() {
     }
 
-    public Vol(Date dateDepart, Date dateArrivee, TypeVol typeVol, BaseTarif baseTarif, Avion avion, Lieu lieuArrivee) {
+    public Vol(Date dateDepart, Date dateArrivee, TypeVol typeVol, BaseTarif baseTarif, Avion avion, Lieu lieuArrivee, double prix) {
         this.dateDepart = dateDepart;
         this.dateArrivee = dateArrivee;
         this.typeVol = typeVol;
         this.baseTarif = baseTarif;
         this.avion = avion;
         this.lieuArrivee = lieuArrivee;
+        this.prixVol = prix;
     }
 
     public String getIdVol() {
@@ -94,5 +96,13 @@ public class Vol implements Serializable {
 
     public void setLieuArrivee(Lieu lieuArrivee) {
         this.lieuArrivee = lieuArrivee;
+    }
+
+    public double getPrixVol() {
+        return prixVol;
+    }
+
+    public void setPrixVol(double prixVol) {
+        this.prixVol = prixVol;
     }
 }

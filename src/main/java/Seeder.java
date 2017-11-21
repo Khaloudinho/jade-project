@@ -35,10 +35,10 @@ public class Seeder {
         }
 
         Set<Avion> avions = new HashSet<>();
-        Avion av1 = new Avion("AF9-151-PKL", 1500, 1420, 55, 56);
-        Avion av2 = new Avion("GF6-051-PPP", 1900, 920, 65, 88);
-        Avion av3 = new Avion("FR4-401-ZKK", 2600, 1520, 75, 120);
-        Avion av4 = new Avion("GB2-398-WYR", 1800, 2100, 85, 99);
+        Avion av1 = new Avion("AF9-151-PKL", 40, 1500, 3);
+        Avion av2 = new Avion("GF6-051-PPP", 40, 1500, 3);
+        Avion av3 = new Avion("FR4-401-ZKK", 40, 1500, 3);
+        Avion av4 = new Avion("GB2-398-WYR", 40, 1500, 3);
 
         avions.add(av1);
         avions.add(av2);
@@ -57,32 +57,32 @@ public class Seeder {
         Set<Aeroport> aeroports = new HashSet<>();
         Aeroport a1 = new Aeroport();
         a1.setNomAeroport("Aéroport international de Conakry"); // Guinee
-        a1.setTaxeAeroport((int)(Math.random() * 1000 + 150));
+        a1.setTaxeAeroport((int)(Math.random() * 1000 + 1500));
         a1.setLieu(l1);
 
         Aeroport a2 = new Aeroport();
         a2.setNomAeroport("Aéroport international Léopold-Sédar-Senghor"); // Senegal
-        a2.setTaxeAeroport((int)(Math.random() * 1000 + 150));
+        a2.setTaxeAeroport((int)(Math.random() * 1000 + 1500));
         a2.setLieu(l2);
 
         Aeroport a3 = new Aeroport();
         a3.setNomAeroport("Aéroport international de Banjul - Yundum"); // Gambie
-        a3.setTaxeAeroport((int)(Math.random() * 1000 + 150));
+        a3.setTaxeAeroport((int)(Math.random() * 1000 + 1500));
         a3.setLieu(l3);
 
         Aeroport a4 = new Aeroport();
         a4.setNomAeroport("Aéroport international Félix-Houphouët-Boigny"); // Cote ivoire
-        a4.setTaxeAeroport((int)(Math.random() * 1000 + 150));
+        a4.setTaxeAeroport((int)(Math.random() * 1000 + 1500));
         a4.setLieu(l4);
 
         Aeroport a5 = new Aeroport();
         a5.setNomAeroport("Aéroport international de Douala"); // Cameroun
-        a5.setTaxeAeroport((int)(Math.random() * 1000 + 150));
+        a5.setTaxeAeroport((int)(Math.random() * 1000 + 1500));
         a5.setLieu(l5);
 
         Aeroport a6 = new Aeroport();
         a6.setNomAeroport("Aéroport international de Gaborone"); // Bostwana
-        a6.setTaxeAeroport((int)(Math.random() * 1000 + 150));
+        a6.setTaxeAeroport((int)(Math.random() * 1000 + 1500));
         a6.setLieu(l6);
 
         aeroports.add(a1);
@@ -97,8 +97,8 @@ public class Seeder {
         }
 
         Set<BaseTarif> baseTarifs = new HashSet<>();
-        BaseTarif bt = new BaseTarif("charter", 1652);
-        BaseTarif bt2 = new BaseTarif("regulier", 1992);
+        BaseTarif bt = new BaseTarif(TypeVol.Charter, 1652);
+        BaseTarif bt2 = new BaseTarif(TypeVol.Regulier, 1992);
 
         baseTarifs.add(bt);
         baseTarifs.add(bt2);
@@ -108,10 +108,10 @@ public class Seeder {
         }
 
         Set<Vol> vols = new HashSet<>();
-        Vol v1 = new Vol(dateDepart, dateArrivee, TypeVol.charter, bt, av1, l1);
-        Vol v2 = new Vol(dateDepart, dateArrivee, TypeVol.charter, bt, av2, l3);
-        Vol v3 = new Vol(dateDepartVolsReguliers, dateArriveeVolsReguliers, TypeVol.regulier, bt2, av3, l4);
-        Vol v4 = new Vol(dateDepartVolsReguliers, dateArriveeVolsReguliers, TypeVol.regulier, bt2, av4, l5);
+        Vol v1 = new Vol(dateDepart, dateArrivee, TypeVol.Charter, bt, av1, l1);
+        Vol v2 = new Vol(dateDepart, dateArrivee, TypeVol.Charter, bt, av2, l3);
+        Vol v3 = new Vol(dateDepartVolsReguliers, dateArriveeVolsReguliers, TypeVol.Regulier, bt2, av3, l4);
+        Vol v4 = new Vol(dateDepartVolsReguliers, dateArriveeVolsReguliers, TypeVol.Regulier, bt2, av4, l5);
 
         vols.add(v1);
         vols.add(v2);
