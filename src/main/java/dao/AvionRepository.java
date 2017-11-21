@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Set;
 
-public interface AvionRepository extends JpaRepository<Lieu, Long> {
+public interface AvionRepository extends JpaRepository<Avion, Long> {
 
     @Query(value = "SELECT * FROM avion WHERE immatriculation = :immatriculation", nativeQuery = true)
     Avion getAvionParImmatriculation(@Param("immatriculation") String immatriculation);
