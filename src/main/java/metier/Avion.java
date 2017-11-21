@@ -15,19 +15,19 @@ public class Avion implements Serializable {
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String idAvion;
     private String immatriculation;
-    private int capaciteSoute;
+    private int capaciteTotale;
     private int autonomie;
     private int consommationCarburant;
     private int capaciteLibre;
 
     public Avion() {}
 
-    public Avion(String immatriculation, int capaciteSoute, int autonomie, int consommationCarburant, int capaciteLibre) {
+    public Avion(String immatriculation, int capaciteTotale, int autonomie, int consommationCarburant) {
         this.immatriculation = immatriculation;
-        this.capaciteSoute = capaciteSoute;
+        this.capaciteTotale = capaciteTotale;
         this.autonomie = autonomie;
         this.consommationCarburant = consommationCarburant;
-        this.capaciteLibre = capaciteLibre;
+        this.capaciteLibre = capaciteTotale;
     }
 
     public String getIdAvion() {
@@ -47,11 +47,11 @@ public class Avion implements Serializable {
     }
 
     public int getCapaciteSoute() {
-        return capaciteSoute;
+        return capaciteTotale;
     }
 
-    public void setCapaciteSoute(int capaciteSoute) {
-        this.capaciteSoute = capaciteSoute;
+    public void setCapaciteSoute(int capaciteTotale) {
+        this.capaciteTotale = capaciteTotale;
     }
 
     public int getAutonomie() {

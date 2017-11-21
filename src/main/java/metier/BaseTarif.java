@@ -1,10 +1,9 @@
 package metier;
 
 import org.hibernate.annotations.GenericGenerator;
+import util.TypeVol;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
@@ -15,13 +14,14 @@ public class BaseTarif implements Serializable {
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String idBaseTarif;
 
-    private String typeBaseTarif;
+    @Enumerated(EnumType.STRING)
+    private TypeVol typeBaseTarif;
 
     private float prixReference;
 
     public BaseTarif() {}
 
-    public BaseTarif(String type, float prix) {
+    public BaseTarif(TypeVol type, float prix) {
         this.typeBaseTarif = type;
         this.prixReference = prix;
     }
@@ -34,11 +34,11 @@ public class BaseTarif implements Serializable {
         this.idBaseTarif = idBaseTarif;
     }
 
-    public String getTypeBaseTarif() {
+    public TypeVol getTypeBaseTarif() {
         return typeBaseTarif;
     }
 
-    public void setTypeBaseTarif(String typeBaseTarif) {
+    public void setTypeBaseTarif(TypeVol typeBaseTarif) {
         this.typeBaseTarif = typeBaseTarif;
     }
 
