@@ -36,5 +36,4 @@ public class VolManagementBehavior extends CyclicBehaviour{
             block();
         }
     }
-    }
 }

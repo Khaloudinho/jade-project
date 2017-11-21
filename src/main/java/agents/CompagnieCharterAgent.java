@@ -2,7 +2,6 @@ package agents;
 
 import containers.CompagnieContainer;
 import jade.core.AID;
-import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.core.behaviours.ParallelBehaviour;
@@ -10,10 +9,12 @@ import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
+import jade.gui.GuiAgent;
+import jade.gui.GuiEvent;
 import jade.lang.acl.ACLMessage;
 import jade.wrapper.ControllerException;
 
-public class CompagnieCharterAgent extends Agent implements Compagnie {
+public class CompagnieCharterAgent extends GuiAgent implements Compagnie {
 
     private CompagnieContainer compagnieContainer;
 
@@ -21,7 +22,7 @@ public class CompagnieCharterAgent extends Agent implements Compagnie {
     @Override
     protected void setup(){
         compagnieContainer= (CompagnieContainer) getArguments()[0];
-        //compagnieContainer.setVendeurAgent(this);
+        compagnieContainer.setCompagnieAgent(this);
         System.out.println("Initialisation de l'agent "+this.getAID().getName());
         ParallelBehaviour parallelBehaviour = new ParallelBehaviour();
         addBehaviour(parallelBehaviour);
@@ -32,8 +33,8 @@ public class CompagnieCharterAgent extends Agent implements Compagnie {
                 DFAgentDescription dfa=new DFAgentDescription();
                 dfa.setName(getAID());
                 ServiceDescription sd = new ServiceDescription();
-                sd.setType("Vente");
-                sd.setName("Vente-livres");
+                sd.setType("Vols");
+                sd.setName("Vols-associations");
                 dfa.addServices(sd);
                 try {
                     DFService.register(myAgent, dfa);
@@ -50,9 +51,9 @@ public class CompagnieCharterAgent extends Agent implements Compagnie {
                 if(aclMessage!=null){
                     switch (aclMessage.getPerformative()){
                         case ACLMessage.CFP:
-                            //GuiEvent guiEvent = new GuiEvent(this, 1);
-                            //guiEvent.addParameter(aclMessage.getContent());
-                            //compagnieContainer.viewMessage(guiEvent);
+                            GuiEvent guiEvent = new GuiEvent(this, 1);
+                            guiEvent.addParameter(aclMessage.getContent());
+                            compagnieContainer.viewMessage(guiEvent);
                             break;
 
                         case ACLMessage.ACCEPT_PROPOSAL:
@@ -91,12 +92,12 @@ public class CompagnieCharterAgent extends Agent implements Compagnie {
         }
     }
 
-    /*@Override
+    @Override
     public void onGuiEvent(GuiEvent guiEvent) {
         ACLMessage aclMessage = new ACLMessage(ACLMessage.REQUEST);
         String livre = guiEvent.getParameter(0).toString();
         aclMessage.setContent(livre);
-        aclMessage.addReceiver(new AID("acheteur", AID.ISLOCALNAME));
+        aclMessage.addReceiver(new AID("compagniecharter", AID.ISLOCALNAME));
         send(aclMessage);
-    }*/
+    }
 }
