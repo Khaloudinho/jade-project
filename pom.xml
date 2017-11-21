@@ -93,7 +93,6 @@
             <artifactId>hibernate-core</artifactId>
             <version>5.2.11.Final</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/com.tilab.jade/jade -->
         <dependency>
             <groupId>com.tilab.jade</groupId>
             <artifactId>jade</artifactId>
