@@ -5,7 +5,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaBuilder;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -124,6 +123,7 @@ public class Seeder {
         Vol v4 = new Vol(dateDepartVolsReguliers, dateArriveeVolsReguliers, TypeVol.Regulier, bt2, av4, a4);
         Vol v5 = new Vol(dateDepartVolsReguliers, dateArriveeVolsReguliers, TypeVol.Regulier, bt2, av2, a5);
         Vol v6 = new Vol(dateDepartVolsReguliers, dateArriveeVolsReguliers, TypeVol.Regulier, bt2, av1, a6);
+        Vol v7 = new Vol(dateDepart, dateArriveeVolsReguliers, TypeVol.Regulier, bt2, av3, a1);
 
         vols.add(v1);
         vols.add(v2);
@@ -131,6 +131,7 @@ public class Seeder {
         vols.add(v4);
         vols.add(v5);
         vols.add(v6);
+        vols.add(v7);
 
         for (Vol vol : vols) {
             em.persist(vol);
@@ -152,7 +153,8 @@ public class Seeder {
         final int prixKerosene = 1140;
 
         System.out.println("************ Price calculus below ****************");
-        String stringQuery1 = "SELECT a.consommationCarburant, ae.heuresVolDepuisParis, v.aeroportArrivee.taxeAeroport, v.aeroportArrivee.lieu.ville " +
+        String stringQuery1 = "SELECT a.consommationCarburant, ae.heuresVolDepuisParis, v.aeroportArrivee.taxeAeroport, " +
+                "v.aeroportArrivee.lieu.ville " +
                     "FROM Vol v " +
                     "JOIN v.aeroportArrivee ae " +
                     "JOIN v.avion a ";
@@ -172,6 +174,18 @@ public class Seeder {
         v4.setPrixVol(tousLesPrix.get(3));
         v5.setPrixVol(tousLesPrix.get(4));
         v6.setPrixVol(tousLesPrix.get(5));
+        v7.setPrixVol(tousLesPrix.get(6));
+
+        System.out.println("Requête : Vol.getVolsCorrespondantsALaDemande");
+        Query queryVolsCorrespondantsALaDemande = em.createNamedQuery("Vol.getVolsCorrespondantsALaDemande", String.class);
+        queryVolsCorrespondantsALaDemande.setParameter("date", Date.valueOf("2017-01-01"));
+        queryVolsCorrespondantsALaDemande.setParameter("pays", "Guinee");
+        queryVolsCorrespondantsALaDemande.setParameter("capaciteLibre", new Integer(10));
+
+        List<String> volsCorrespondantsALaDemande = queryVolsCorrespondantsALaDemande.getResultList();
+        for (String s : volsCorrespondantsALaDemande){
+            System.out.println("ID Vol : " + s);
+        }
 
         em.getTransaction().commit();
         em.close();
