@@ -97,8 +97,8 @@ public class Seeder {
         }
 
         Set<BaseTarif> baseTarifs = new HashSet<>();
-        BaseTarif bt = new BaseTarif("Base tarifaire vols charters", 1652);
-        BaseTarif bt2 = new BaseTarif("Base tarifaire vols réguliers", 1992);
+        BaseTarif bt = new BaseTarif("charter", 1652);
+        BaseTarif bt2 = new BaseTarif("regulier", 1992);
 
         baseTarifs.add(bt);
         baseTarifs.add(bt2);

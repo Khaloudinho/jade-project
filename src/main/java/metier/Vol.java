@@ -31,7 +31,7 @@ public class Vol implements Serializable {
     public Vol() {
     }
 
-public Vol(Date dateDepart, Date dateArrivee, TypeVol typeVol, BaseTarif baseTarif, Avion avion, Lieu lieuArrivee) {
+    public Vol(Date dateDepart, Date dateArrivee, TypeVol typeVol, BaseTarif baseTarif, Avion avion, Lieu lieuArrivee) {
         this.dateDepart = dateDepart;
         this.dateArrivee = dateArrivee;
         this.typeVol = typeVol;
