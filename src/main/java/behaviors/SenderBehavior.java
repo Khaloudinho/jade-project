@@ -2,20 +2,18 @@ package behaviors;
 
 import impl.AvionImpl;
 import impl.BaseTarifImpl;
-import impl.LieuImpl;
+import impl.AeroportImpl;
 import jade.core.Agent;
 import jade.core.behaviours.SimpleBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
-import metier.BaseTarif;
 import metier.Vol;
 import util.TypeVol;
 
 import java.io.IOException;
 import java.sql.Date;
-import java.util.Base64;
 import java.util.Iterator;
 
 public class SenderBehavior extends SimpleBehaviour{
@@ -37,11 +35,14 @@ public class SenderBehavior extends SimpleBehaviour{
         Date dateDepart = Date.valueOf("2017-01-01");
         Date dateArrivee = Date.valueOf("2017-01-01");
 
-        LieuImpl li = new LieuImpl();
+        AeroportImpl ae = new AeroportImpl();
         AvionImpl ai = new AvionImpl();
         BaseTarifImpl bi = new BaseTarifImpl();
 
-        Vol v1 = new Vol(dateDepart, dateArrivee, TypeVol.Charter, bi.getBaseTarifParNom("charter"), ai.getAvionParImmatriculation("GB2-398-WYR"), li.getLieuParVille("Douala"), 1000);
+        Vol v1 = new Vol(dateDepart, dateArrivee, TypeVol.Charter,
+                bi.getBaseTarifParNom("charter"),
+                ai.getAvionParImmatriculation("GB2-398-WYR"),
+                ae.getLieuParVille("Douala"));
 
         //String message = "Coucou, voila l'objet dont je te parlais.";
         ACLMessage aclMessage = new ACLMessage(ACLMessage.INFORM);

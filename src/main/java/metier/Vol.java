@@ -28,19 +28,19 @@ public class Vol implements Serializable {
     private Avion avion;
 
     @OneToOne
-    private Lieu lieuArrivee;
+    private Aeroport aeroportArrivee;
 
     public Vol() {
     }
 
-    public Vol(Date dateDepart, Date dateArrivee, TypeVol typeVol, BaseTarif baseTarif, Avion avion, Lieu lieuArrivee, double prix) {
+    public Vol(Date dateDepart, Date dateArrivee, TypeVol typeVol, BaseTarif baseTarif, Avion avion, Aeroport aeroportArrivee) {
         this.dateDepart = dateDepart;
         this.dateArrivee = dateArrivee;
         this.typeVol = typeVol;
         this.baseTarif = baseTarif;
         this.avion = avion;
-        this.lieuArrivee = lieuArrivee;
-        this.prixVol = prix;
+        this.aeroportArrivee = aeroportArrivee;
+        this.prixVol = 0;
     }
 
     public String getIdVol() {
@@ -91,12 +91,12 @@ public class Vol implements Serializable {
         this.avion = avion;
     }
 
-    public Lieu getLieuArrivee() {
-        return lieuArrivee;
+    public Aeroport getAeroportArrivee() {
+        return aeroportArrivee;
     }
 
-    public void setLieuArrivee(Lieu lieuArrivee) {
-        this.lieuArrivee = lieuArrivee;
+    public void setAeroportArrivee(Aeroport aeroportArrivee) {
+        this.aeroportArrivee = aeroportArrivee;
     }
 
     public double getPrixVol() {

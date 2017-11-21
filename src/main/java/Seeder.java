@@ -4,8 +4,12 @@ import util.TypeVol;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -19,7 +23,7 @@ public class Seeder {
         Lieu l1 = new Lieu("Conakry", "Guinee");
         Lieu l2 = new Lieu("Dakar", "Senegal");
         Lieu l3 = new Lieu("Banjul", "Gambie");
-        Lieu l4 = new Lieu("Abidjan", "Cote d'ivoire");
+        Lieu l4 = new Lieu("Abidjan", "Cote d'Ivoire");
         Lieu l5 = new Lieu("Douala", "Cameroun");
         Lieu l6 = new Lieu("Gaborone", "Bostwana");
 
@@ -58,31 +62,37 @@ public class Seeder {
         Aeroport a1 = new Aeroport();
         a1.setNomAeroport("Aéroport international de Conakry"); // Guinee
         a1.setTaxeAeroport((int)(Math.random() * 1000 + 1500));
+        a1.setHeuresVolDepuisParis(8);
         a1.setLieu(l1);
 
         Aeroport a2 = new Aeroport();
         a2.setNomAeroport("Aéroport international Léopold-Sédar-Senghor"); // Senegal
         a2.setTaxeAeroport((int)(Math.random() * 1000 + 1500));
+        a2.setHeuresVolDepuisParis(6);
         a2.setLieu(l2);
 
         Aeroport a3 = new Aeroport();
         a3.setNomAeroport("Aéroport international de Banjul - Yundum"); // Gambie
         a3.setTaxeAeroport((int)(Math.random() * 1000 + 1500));
+        a3.setHeuresVolDepuisParis(8);
         a3.setLieu(l3);
 
         Aeroport a4 = new Aeroport();
         a4.setNomAeroport("Aéroport international Félix-Houphouët-Boigny"); // Cote ivoire
         a4.setTaxeAeroport((int)(Math.random() * 1000 + 1500));
+        a4.setHeuresVolDepuisParis(7);
         a4.setLieu(l4);
 
         Aeroport a5 = new Aeroport();
         a5.setNomAeroport("Aéroport international de Douala"); // Cameroun
         a5.setTaxeAeroport((int)(Math.random() * 1000 + 1500));
+        a5.setHeuresVolDepuisParis(7);
         a5.setLieu(l5);
 
         Aeroport a6 = new Aeroport();
         a6.setNomAeroport("Aéroport international de Gaborone"); // Bostwana
         a6.setTaxeAeroport((int)(Math.random() * 1000 + 1500));
+        a6.setHeuresVolDepuisParis(10);
         a6.setLieu(l6);
 
         aeroports.add(a1);
@@ -108,24 +118,28 @@ public class Seeder {
         }
 
         Set<Vol> vols = new HashSet<>();
-        Vol v1 = new Vol(dateDepart, dateArrivee, TypeVol.Charter, bt, av1, l1, 1000);
-        Vol v2 = new Vol(dateDepart, dateArrivee, TypeVol.Charter, bt, av2, l3, 1000);
-        Vol v3 = new Vol(dateDepartVolsReguliers, dateArriveeVolsReguliers, TypeVol.Regulier, bt2, av3, l4, 1000);
-        Vol v4 = new Vol(dateDepartVolsReguliers, dateArriveeVolsReguliers, TypeVol.Regulier, bt2, av4, l5, 1000);
+        Vol v1 = new Vol(dateDepart, dateArrivee, TypeVol.Charter, bt, av1, a1);
+        Vol v2 = new Vol(dateDepart, dateArrivee, TypeVol.Charter, bt, av2, a2);
+        Vol v3 = new Vol(dateDepartVolsReguliers, dateArriveeVolsReguliers, TypeVol.Regulier, bt2, av3, a3);
+        Vol v4 = new Vol(dateDepartVolsReguliers, dateArriveeVolsReguliers, TypeVol.Regulier, bt2, av4, a4);
+        Vol v5 = new Vol(dateDepartVolsReguliers, dateArriveeVolsReguliers, TypeVol.Regulier, bt2, av2, a5);
+        Vol v6 = new Vol(dateDepartVolsReguliers, dateArriveeVolsReguliers, TypeVol.Regulier, bt2, av1, a6);
 
         vols.add(v1);
         vols.add(v2);
         vols.add(v3);
         vols.add(v4);
+        vols.add(v5);
+        vols.add(v6);
 
         for (Vol vol : vols) {
             em.persist(vol);
         }
 
         Set<Abonnement> abonnements = new HashSet<>();
-        Abonnement ab = new Abonnement("Abonnement 1", 15095.82f);
-        Abonnement ab2 = new Abonnement("Abonnement 2", 18795.82f);
-        Abonnement ab3 = new Abonnement("Abonnement 3", 19595.82f);
+        Abonnement ab = new Abonnement("Abonnement 1", 15095.82);
+        Abonnement ab2 = new Abonnement("Abonnement 2", 18795.82);
+        Abonnement ab3 = new Abonnement("Abonnement 3", 19595.82);
 
         abonnements.add(ab);
         abonnements.add(ab2);
@@ -134,6 +148,30 @@ public class Seeder {
         for (Abonnement abo : abonnements) {
             em.persist(abo);
         }
+
+        final int prixKerosene = 1140;
+
+        System.out.println("************ Price calculus below ****************");
+        String stringQuery1 = "SELECT a.consommationCarburant, ae.heuresVolDepuisParis, v.aeroportArrivee.taxeAeroport, v.aeroportArrivee.lieu.ville " +
+                    "FROM Vol v " +
+                    "JOIN v.aeroportArrivee ae " +
+                    "JOIN v.avion a ";
+        Query query1 = em.createQuery(stringQuery1);
+        List<Object[]> paramsForPrice = query1.getResultList();
+        List<Integer> tousLesPrix = new ArrayList<>();
+
+        for (Object[] o : paramsForPrice) {
+            int prix = Integer.valueOf(o[0].toString()) * Integer.valueOf(o[1].toString()) * prixKerosene + Integer.valueOf(o[2].toString());
+            System.out.println("Prix [Paris-" + o[3].toString() + "] : " + prix + " €");
+            tousLesPrix.add(prix);
+        }
+
+        v1.setPrixVol(tousLesPrix.get(0));
+        v2.setPrixVol(tousLesPrix.get(1));
+        v3.setPrixVol(tousLesPrix.get(2));
+        v4.setPrixVol(tousLesPrix.get(3));
+        v5.setPrixVol(tousLesPrix.get(4));
+        v6.setPrixVol(tousLesPrix.get(5));
 
         em.getTransaction().commit();
         em.close();
