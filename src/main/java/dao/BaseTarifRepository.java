@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface BaseTarifRepository extends JpaRepository<Lieu, Long> {
 
-    @Query(value = "SELECT * FROM basetarif WHERE nom = :nom", nativeQuery = true)
+    @Query(value = "SELECT * FROM basetarif WHERE typeBaseTarif = :nom", nativeQuery = true)
     BaseTarif getBaseTarifParNom(@Param("nom") String nom);
 
 }
