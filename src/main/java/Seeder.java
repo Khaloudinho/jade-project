@@ -1,3 +1,5 @@
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import metier.*;
 import util.TypeVol;
 
@@ -13,7 +15,7 @@ import java.util.Set;
 
 
 public class Seeder {
-    public static void main(String [] args){
+    public static void main(String [] args) throws JsonProcessingException {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("jadeprojectPU");
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
@@ -196,5 +198,13 @@ public class Seeder {
         em.getTransaction().commit();
         em.close();
         emf.close();
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        //Object to JSON in String
+        String jsonInString = mapper.writeValueAsString(volsCorrespondantsALaDemande);
+
+        System.out.println(jsonInString.toString());
+
     }
 }
