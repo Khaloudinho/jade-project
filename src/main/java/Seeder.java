@@ -6,6 +6,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.sql.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -133,6 +134,12 @@ public class Seeder {
 
         for (Abonnement abo : abonnements) {
             em.persist(abo);
+        }
+
+        System.out.println("***********1***********");
+        List<String> result1 = em.createNamedQuery("query1").getResultList();
+        for (String r : result1) {
+            System.out.println(r);
         }
 
         em.getTransaction().commit();
