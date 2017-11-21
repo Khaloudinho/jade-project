@@ -11,7 +11,7 @@ import java.sql.Date;
 @NamedQuery(
                 // Trouver les vols pour un pays donné à une date donnée
                 name = "Vol.getVolsCorrespondantsALaDemande",
-                query = "SELECT v.id " +
+                query = "SELECT v.aeroportArrivee.nomAeroport, v.aeroportArrivee.lieu.pays, v.dateArrivee, v.avion.capaciteLibre, v.prixVol " +
                         "FROM Vol v " +
                         "WHERE v.dateDepart = :date " +
                         "AND v.aeroportArrivee.lieu.pays = :pays " +

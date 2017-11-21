@@ -177,14 +177,20 @@ public class Seeder {
         v7.setPrixVol(tousLesPrix.get(6));
 
         System.out.println("Requête : Vol.getVolsCorrespondantsALaDemande");
-        Query queryVolsCorrespondantsALaDemande = em.createNamedQuery("Vol.getVolsCorrespondantsALaDemande", String.class);
+        Query queryVolsCorrespondantsALaDemande = em.createNamedQuery("Vol.getVolsCorrespondantsALaDemande", Object[].class);
         queryVolsCorrespondantsALaDemande.setParameter("date", Date.valueOf("2017-01-01"));
         queryVolsCorrespondantsALaDemande.setParameter("pays", "Guinee");
         queryVolsCorrespondantsALaDemande.setParameter("capaciteLibre", new Integer(10));
 
-        List<String> volsCorrespondantsALaDemande = queryVolsCorrespondantsALaDemande.getResultList();
-        for (String s : volsCorrespondantsALaDemande){
-            System.out.println("ID Vol : " + s);
+        List<Object[]> volsCorrespondantsALaDemande = queryVolsCorrespondantsALaDemande.getResultList();
+        for (Object[] o : volsCorrespondantsALaDemande){
+            System.out.println("============== VOL CORRESPONDANT ==============");
+            System.out.println("Aéroport : " + o[0].toString());
+            System.out.println("Ville : " + o[1].toString());
+            System.out.println("Date arrivée : " + o[2].toString());
+            System.out.println("Capacité libre : " + o[3].toString());
+            System.out.println("Prix : " + o[4].toString());
+            System.out.println("===============================================");
         }
 
         em.getTransaction().commit();
