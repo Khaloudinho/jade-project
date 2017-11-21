@@ -51,6 +51,9 @@ public class CompagnieCharterAgent extends GuiAgent implements Compagnie {
                 if(aclMessage!=null){
                     switch (aclMessage.getPerformative()){
                         case ACLMessage.CFP:
+
+                            System.out.println("Onthology message : "+aclMessage.getOntology());
+
                             GuiEvent guiEvent = new GuiEvent(this, 1);
                             guiEvent.addParameter(aclMessage.getContent());
                             compagnieContainer.viewMessage(guiEvent);

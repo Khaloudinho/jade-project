@@ -22,6 +22,7 @@ public class JacksonMapper {
         AvionImpl ai = new AvionImpl();
         BaseTarifImpl bi = new BaseTarifImpl();
 
+        //Vol volExample = new Vol(dateDepart, dateArrivee, TypeVol.charter, bi.getBaseTarifParNom("charter"), ai.getAvionParImmatriculation("AFX-508-RF"), li.getLieuParVille("Douala"));
         Vol volExample = new Vol(dateDepart, dateArrivee, TypeVol.charter, bi.getBaseTarifParNom("charter"), ai.getAvionParImmatriculation("AFX-508-RF"), li.getLieuParVille("Douala"));
 
         //Object to JSON in String
@@ -30,7 +31,7 @@ public class JacksonMapper {
         return jsonInString;
     }
 
-    public static void main(String [] args) throws JsonProcessingException {
+    public static void main(String[] args) throws JsonProcessingException {
         System.out.println(JacksonMapper.mapVol());
 
     }
