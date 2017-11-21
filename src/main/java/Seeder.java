@@ -108,10 +108,10 @@ public class Seeder {
         }
 
         Set<Vol> vols = new HashSet<>();
-        Vol v1 = new Vol(dateDepart, dateArrivee, TypeVol.Charter, bt, av1, l1);
-        Vol v2 = new Vol(dateDepart, dateArrivee, TypeVol.Charter, bt, av2, l3);
-        Vol v3 = new Vol(dateDepartVolsReguliers, dateArriveeVolsReguliers, TypeVol.Regulier, bt2, av3, l4);
-        Vol v4 = new Vol(dateDepartVolsReguliers, dateArriveeVolsReguliers, TypeVol.Regulier, bt2, av4, l5);
+        Vol v1 = new Vol(dateDepart, dateArrivee, TypeVol.Charter, bt, av1, l1, 1000);
+        Vol v2 = new Vol(dateDepart, dateArrivee, TypeVol.Charter, bt, av2, l3, 1000);
+        Vol v3 = new Vol(dateDepartVolsReguliers, dateArriveeVolsReguliers, TypeVol.Regulier, bt2, av3, l4, 1000);
+        Vol v4 = new Vol(dateDepartVolsReguliers, dateArriveeVolsReguliers, TypeVol.Regulier, bt2, av4, l5, 1000);
 
         vols.add(v1);
         vols.add(v2);

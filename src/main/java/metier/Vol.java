@@ -9,6 +9,7 @@ import java.sql.Date;
 
 @Entity
 public class Vol implements Serializable {
+
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
