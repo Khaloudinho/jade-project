@@ -1,7 +1,6 @@
 package behaviors.vols;
 
 import containers.CompagnieContainer;
-import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.gui.GuiEvent;
 import jade.lang.acl.ACLMessage;
@@ -11,13 +10,15 @@ public class VolManagementBehavior extends CyclicBehaviour{
     private CompagnieContainer compagnieContainer;
 
 
-    public VolManagementBehavior(Agent a) {
-        super(a);
+    public VolManagementBehavior(CompagnieContainer compagnieContainer) {
+        super();
+        this.compagnieContainer=compagnieContainer;
     }
 
     @Override
     public void action() {
-        ACLMessage aclMessage=super.myAgent.receive();
+        System.out.println("merde");
+        ACLMessage aclMessage=myAgent.receive();
         if(aclMessage!=null){
             switch (aclMessage.getPerformative()){
                 case ACLMessage.CFP:

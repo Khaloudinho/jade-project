@@ -9,6 +9,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -200,7 +202,17 @@ public class Seeder {
             System.out.println("Pays : " + o[6].toString());
             System.out.println("===============================================");
 
-            //volsPourLesAssociation.add(new VolAssociation(o[5].toString(), o[0].toString(), o[6].toString(), o[2].toString(), o[3].toString(), o[4].toString()));
+            final String OLD_FORMAT = "dd/MM/yyyy";
+
+            SimpleDateFormat sdf = new SimpleDateFormat(OLD_FORMAT);
+            Date dateVol = null;
+            try {
+                dateVol = (Date) sdf.parse(o[2].toString());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            volsPourLesAssociation.add(new VolAssociation(o[5].toString(), o[0].toString(), o[6].toString(), dateVol, Integer.parseInt(o[3].toString()), Integer.parseInt(o[4].toString())));
         }
 
         em.getTransaction().commit();

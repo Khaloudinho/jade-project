@@ -1,6 +1,7 @@
 package agents;
 
 import behaviors.vols.RegisterVolBehavior;
+import behaviors.vols.VolManagementBehavior;
 import containers.CompagnieContainer;
 import jade.core.AID;
 import jade.core.behaviours.CyclicBehaviour;
@@ -25,36 +26,13 @@ public class CompagnieCharterAgent extends GuiAgent implements Compagnie {
         compagnieContainer= (CompagnieContainer) getArguments()[0];
         compagnieContainer.setCompagnieAgent(this);
         System.out.println("Initialisation de l'agent "+this.getAID().getName());
+
         ParallelBehaviour parallelBehaviour = new ParallelBehaviour();
-        addBehaviour(parallelBehaviour);
         parallelBehaviour.addSubBehaviour(new RegisterVolBehavior());
+        parallelBehaviour.addSubBehaviour(new VolManagementBehavior(compagnieContainer));
 
-        parallelBehaviour.addSubBehaviour(new CyclicBehaviour() {
-            @Override
-            public void action() {
-                ACLMessage aclMessage=receive();
-                if(aclMessage!=null){
-                    switch (aclMessage.getPerformative()){
-                        case ACLMessage.CFP:
+        addBehaviour(parallelBehaviour);
 
-                            System.out.println("Onthology message : "+aclMessage.getOntology());
-
-                            GuiEvent guiEvent = new GuiEvent(this, 1);
-                            guiEvent.addParameter(aclMessage.getContent());
-                            compagnieContainer.viewMessage(guiEvent);
-                            break;
-
-                        case ACLMessage.ACCEPT_PROPOSAL:
-                            break;
-
-                        default:
-                            break;
-                    }
-                }else {
-                    block();
-                }
-            }
-        });
     }
 
     @Override
