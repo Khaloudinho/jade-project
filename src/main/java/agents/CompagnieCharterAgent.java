@@ -1,5 +1,6 @@
 package agents;
 
+import behaviors.vols.RegisterVolBehavior;
 import containers.CompagnieContainer;
 import jade.core.AID;
 import jade.core.behaviours.CyclicBehaviour;
@@ -26,23 +27,7 @@ public class CompagnieCharterAgent extends GuiAgent implements Compagnie {
         System.out.println("Initialisation de l'agent "+this.getAID().getName());
         ParallelBehaviour parallelBehaviour = new ParallelBehaviour();
         addBehaviour(parallelBehaviour);
-        parallelBehaviour.addSubBehaviour(new OneShotBehaviour() {
-            @Override
-            public void action() {
-                System.out.println("*************************************************");
-                DFAgentDescription dfa=new DFAgentDescription();
-                dfa.setName(getAID());
-                ServiceDescription sd = new ServiceDescription();
-                sd.setType("Vols");
-                sd.setName("Vols-associations");
-                dfa.addServices(sd);
-                try {
-                    DFService.register(myAgent, dfa);
-                } catch (FIPAException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        parallelBehaviour.addSubBehaviour(new RegisterVolBehavior());
 
         parallelBehaviour.addSubBehaviour(new CyclicBehaviour() {
             @Override

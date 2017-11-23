@@ -1,5 +1,6 @@
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import messages.VolAssociation;
 import metier.*;
 import util.TypeVol;
 
@@ -185,6 +186,9 @@ public class Seeder {
         queryVolsCorrespondantsALaDemande.setParameter("capaciteLibre", new Integer(10));
 
         List<Object[]> volsCorrespondantsALaDemande = queryVolsCorrespondantsALaDemande.getResultList();
+
+        ArrayList<VolAssociation> volsPourLesAssociation = new ArrayList<VolAssociation>();
+
         for (Object[] o : volsCorrespondantsALaDemande){
             System.out.println("============== VOL CORRESPONDANT ==============");
             System.out.println("Aéroport : " + o[0].toString());
@@ -192,7 +196,11 @@ public class Seeder {
             System.out.println("Date arrivée : " + o[2].toString());
             System.out.println("Capacité libre : " + o[3].toString());
             System.out.println("Prix : " + o[4].toString());
+            System.out.println("IdVol : " + o[5].toString());
+            System.out.println("Pays : " + o[6].toString());
             System.out.println("===============================================");
+
+            //volsPourLesAssociation.add(new VolAssociation(o[5].toString(), o[0].toString(), o[6].toString(), o[2].toString(), o[3].toString(), o[4].toString()));
         }
 
         em.getTransaction().commit();

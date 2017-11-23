@@ -9,8 +9,8 @@ import jade.domain.FIPAException;
 
 public class RegisterVolBehavior extends OneShotBehaviour{
 
-    public RegisterVolBehavior(Agent a) {
-        super(a);
+    public RegisterVolBehavior() {
+        super();
     }
 
     @Override
