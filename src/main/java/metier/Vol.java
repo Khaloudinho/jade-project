@@ -8,15 +8,21 @@ import java.io.Serializable;
 import java.sql.Date;
 
 @Entity
-@NamedQuery(
-                // Trouver les vols pour un pays donné à une date donnée
+@NamedQueries({
+        @NamedQuery(
                 name = "Vol.getVolsCorrespondantsALaDemande",
                 query = "SELECT v.aeroportArrivee.nomAeroport, v.aeroportArrivee.lieu.pays, v.dateArrivee, v.avion.capaciteLibre, v.prixVol, v.idVol " +
                         "FROM Vol v " +
                         "WHERE v.dateDepart = :date " +
                         "AND v.aeroportArrivee.lieu.pays = :pays " +
-                        "AND v.avion.capaciteLibre >= :capaciteLibre "
-)
+                        "AND v.avion.capaciteLibre >= :capaciteLibre " +
+                        "AND v.typeVol = :typeVol "),
+
+        @NamedQuery(
+                name = "Vol.calculerLesPrixDesVols",
+                query = "SELECT v.id, v.avion.consommationCarburant, v.aeroportArrivee.heuresVolDepuisParis, v.aeroportArrivee.taxeAeroport, " +
+                        "v.aeroportArrivee.lieu.ville FROM Vol v ")
+})
 
 public class Vol implements Serializable {
 
