@@ -8,7 +8,7 @@
 - Saïd Idrissi
 
 # Description
-- Jade project to follow oriented-programming metier course
+- Jade project followed within the framework of agent-oriented programming course
 
 # Used tools
 - Jade v4.3.3
