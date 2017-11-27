@@ -1,4 +1,4 @@
-package messages;
+package messages.association;
 
 import java.sql.Date;
 

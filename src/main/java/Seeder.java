@@ -1,6 +1,7 @@
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import messages.VolAssociation;
+import messages.association.DemandeVols;
+import messages.association.VolAssociation;
 import metier.*;
 import util.TypeVol;
 
@@ -9,7 +10,6 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 import java.sql.Date;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -214,6 +214,13 @@ public class Seeder {
         String jsonInString = mapper.writeValueAsString(volsCorrespondantsALaDemande);
 
         System.out.println(jsonInString.toString());
+
+        DemandeVols demandeVols = new DemandeVols("RDC", new Date(2017,11, 11), 30);
+
+        //Object to JSON in String
+        String jsonInString2 = mapper.writeValueAsString(demandeVols);
+
+        System.out.println(jsonInString2.toString());
 
     }
 }

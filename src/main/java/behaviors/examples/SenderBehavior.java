@@ -1,4 +1,4 @@
-package behaviors;
+package behaviors.examples;
 
 import impl.AvionImpl;
 import impl.AeroportImpl;
