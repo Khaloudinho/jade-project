@@ -176,7 +176,7 @@ public class Seeder {
 
         List<Object[]> volsCorrespondantsALaDemande = queryVolsCorrespondantsALaDemande.getResultList();
 
-        ArrayList<VolAssociation> volsPourLesAssociation = new ArrayList<VolAssociation>();
+        ArrayList<VolAssociation> volsPourLesAssociation = new ArrayList<>();
 
         for (Object[] o : volsCorrespondantsALaDemande){
             System.out.println("============== VOL CORRESPONDANT ==============");
@@ -186,7 +186,6 @@ public class Seeder {
             System.out.println("Capacité libre : " + o[3].toString());
             System.out.println("Prix : " + o[4].toString());
             System.out.println("IdVol : " + o[5].toString());
-            System.out.println("Pays : " + o[6].toString());
             System.out.println("===============================================");
 
             //final String OLD_FORMAT = "dd-MM-yyyy";
@@ -201,7 +200,7 @@ public class Seeder {
                 e.printStackTrace();
             }
 
-            volsPourLesAssociation.add(new VolAssociation(o[5].toString(), o[0].toString(), o[6].toString(), dateVol, Integer.parseInt(o[3].toString()), Integer.parseInt(o[4].toString().substring(0, o[4].toString().indexOf(".")))));
+            volsPourLesAssociation.add(new VolAssociation(o[5].toString(), o[0].toString(), o[1].toString(), dateVol, Integer.parseInt(o[3].toString()), Integer.parseInt(o[4].toString().substring(0, o[4].toString().indexOf(".")))));
 
         }
 
