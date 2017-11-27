@@ -65,7 +65,7 @@ public class VolAssociation {
         this.capaciteLibre = capaciteLibre;
     }
 
-    public int getPrix() {
+    public long getPrix() {
         return prix;
     }
 

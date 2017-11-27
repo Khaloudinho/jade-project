@@ -202,13 +202,15 @@ public class Seeder {
             System.out.println("Pays : " + o[6].toString());
             System.out.println("===============================================");
 
-            final String OLD_FORMAT = "dd/MM/yyyy";
-
+            //final String OLD_FORMAT = "dd-MM-yyyy";
+            final String OLD_FORMAT = "yyyy-MM-dd";
             SimpleDateFormat sdf = new SimpleDateFormat(OLD_FORMAT);
             Date dateVol = null;
             try {
-                dateVol = (Date) sdf.parse(o[2].toString());
-            } catch (ParseException e) {
+                System.out.println(" DATE VOL " + o[2].toString());
+                String test = o[2].toString();
+                dateVol = Date.valueOf(test);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 

@@ -1,22 +1,35 @@
 package behaviors.vols;
 
 import containers.CompagnieContainer;
+import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
+import jade.core.behaviours.DataStore;
 import jade.gui.GuiEvent;
 import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
+import jade.proto.ContractNetResponder;
 
-public class VolManagementBehavior extends CyclicBehaviour{
+public class VolManagementBehaviorBIS extends ContractNetResponder {
 
     private CompagnieContainer compagnieContainer;
 
-
-    public VolManagementBehavior(CompagnieContainer compagnieContainer) {
-        super();
-        this.compagnieContainer=compagnieContainer;
+    public VolManagementBehaviorBIS(Agent a, MessageTemplate mt) {
+        super(a, mt);
     }
 
-    @Override
+    public VolManagementBehaviorBIS(Agent a, MessageTemplate mt, DataStore store) {
+        super(a, mt, store);
+    }
+
+
+    /*public VolManagementBehaviorBIS(CompagnieContainer compagnieContainer) {
+        super();
+        this.compagnieContainer=compagnieContainer;
+    }*/
+
+    /*@Override
     public void action() {
+        System.out.println("merde");
         ACLMessage aclMessage=myAgent.receive();
         if(aclMessage!=null){
             switch (aclMessage.getPerformative()){
@@ -35,5 +48,5 @@ public class VolManagementBehavior extends CyclicBehaviour{
         }else {
             block();
         }
-    }
+    }*/
 }
