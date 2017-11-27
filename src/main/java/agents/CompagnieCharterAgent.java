@@ -11,20 +11,19 @@ import jade.lang.acl.ACLMessage;
 import jade.wrapper.ControllerException;
 
 public class CompagnieCharterAgent extends GuiAgent implements Compagnie {
-    private CompagnieContainer compagnieContainer;
 
+    private CompagnieContainer compagnieContainer;
 
     @Override
     protected void setup(){
         compagnieContainer= (CompagnieContainer) getArguments()[0];
-        compagnieContainer.setCompagnieAgent(this);
+        compagnieContainer.setCompagnieCharterAgent(this);
         System.out.println("Initialisation de l'agent "+this.getAID().getName());
 
         ParallelBehaviour parallelBehaviour = new ParallelBehaviour();
         parallelBehaviour.addSubBehaviour(new RegisterAgentBehavior("Vols", "Vols-Association"));
         //parallelBehaviour.addSubBehaviour(new VolManagementBehavior(compagnieContainer));
         parallelBehaviour.addSubBehaviour(new VolManagementBehaviorBIS(this, null, compagnieContainer));
-
         addBehaviour(parallelBehaviour);
 
     }

@@ -2,6 +2,7 @@ package containers;
 
 import agents.Compagnie;
 import agents.CompagnieCharterAgent;
+import agents.CompagnieRegulierAgent;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
 import jade.core.Runtime;
@@ -18,7 +19,8 @@ public class CompagnieContainer extends Application {
 
     private AgentContainer agentContainer;
     private CompagnieContainer compagnieContainer;
-    private CompagnieCharterAgent compagnieAgent;
+    private Compagnie compagnieAgent;
+    //private CompagnieCharterAgent compagnieAgent;
 
     public void startContainer() {
         try {
@@ -64,11 +66,15 @@ public class CompagnieContainer extends Application {
         this.compagnieContainer = compagnieContainer;
     }
 
-    public CompagnieCharterAgent getCompagnieAgent() {
+    public Compagnie getCompagnieAgent() {
         return compagnieAgent;
     }
 
-    public void setCompagnieAgent(CompagnieCharterAgent compagnieAgent) {
+    public void setCompagnieCharterAgent(CompagnieCharterAgent compagnieAgent) {
+        this.compagnieAgent = compagnieAgent;
+    }
+
+    public void setCompagnieRegulierAgent(CompagnieRegulierAgent compagnieAgent) {
         this.compagnieAgent = compagnieAgent;
     }
 
