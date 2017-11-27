@@ -105,25 +105,14 @@ public class Seeder {
             em.persist(aeroport);
         }
 
-        Set<BaseTarif> baseTarifs = new HashSet<>();
-        BaseTarif bt = new BaseTarif(TypeVol.Charter, 1652);
-        BaseTarif bt2 = new BaseTarif(TypeVol.Regulier, 1992);
-
-        baseTarifs.add(bt);
-        baseTarifs.add(bt2);
-
-        for (BaseTarif baseTarif : baseTarifs){
-            em.persist(baseTarif);
-        }
-
         Set<Vol> vols = new HashSet<>();
-        Vol v1 = new Vol(dateDepart, dateArrivee, TypeVol.Charter, bt, av1, a1);
-        Vol v2 = new Vol(dateDepart, dateArrivee, TypeVol.Charter, bt, av2, a2);
-        Vol v3 = new Vol(dateDepartVolsReguliers, dateArriveeVolsReguliers, TypeVol.Regulier, bt2, av3, a3);
-        Vol v4 = new Vol(dateDepartVolsReguliers, dateArriveeVolsReguliers, TypeVol.Regulier, bt2, av4, a4);
-        Vol v5 = new Vol(dateDepartVolsReguliers, dateArriveeVolsReguliers, TypeVol.Regulier, bt2, av2, a5);
-        Vol v6 = new Vol(dateDepartVolsReguliers, dateArriveeVolsReguliers, TypeVol.Regulier, bt2, av1, a6);
-        Vol v7 = new Vol(dateDepart, dateArriveeVolsReguliers, TypeVol.Regulier, bt2, av3, a1);
+        Vol v1 = new Vol(dateDepart, dateArrivee, TypeVol.Charter, av1, a1);
+        Vol v2 = new Vol(dateDepart, dateArrivee, TypeVol.Charter, av2, a2);
+        Vol v3 = new Vol(dateDepartVolsReguliers, dateArriveeVolsReguliers, TypeVol.Regulier, av3, a3);
+        Vol v4 = new Vol(dateDepartVolsReguliers, dateArriveeVolsReguliers, TypeVol.Regulier, av4, a4);
+        Vol v5 = new Vol(dateDepartVolsReguliers, dateArriveeVolsReguliers, TypeVol.Regulier, av2, a5);
+        Vol v6 = new Vol(dateDepartVolsReguliers, dateArriveeVolsReguliers, TypeVol.Regulier, av1, a6);
+        Vol v7 = new Vol(dateDepart, dateArriveeVolsReguliers, TypeVol.Regulier, av3, a1);
 
         vols.add(v1);
         vols.add(v2);
@@ -150,20 +139,18 @@ public class Seeder {
             em.persist(abo);
         }
 
-        final int prixKerosene = 1140;
+        final int prixKeroseneParHeure = 1140;
 
         System.out.println("************ Price calculus below ****************");
-        String stringQuery1 = "SELECT a.consommationCarburant, ae.heuresVolDepuisParis, v.aeroportArrivee.taxeAeroport, " +
-                "v.aeroportArrivee.lieu.ville " +
-                    "FROM Vol v " +
-                    "JOIN v.aeroportArrivee ae " +
-                    "JOIN v.avion a ";
+        String stringQuery1 = "SELECT a.consommationCarburant, ae.heuresVolDepuisParis, ae.taxeAeroport, l.ville " +
+                                "FROM Vol v JOIN v.aeroportArrivee ae JOIN v.avion a JOIN ae.lieu l ";
+
         Query query1 = em.createQuery(stringQuery1);
         List<Object[]> paramsForPrice = query1.getResultList();
         List<Integer> tousLesPrix = new ArrayList<>();
 
         for (Object[] o : paramsForPrice) {
-            int prix = Integer.valueOf(o[0].toString()) * Integer.valueOf(o[1].toString()) * prixKerosene + Integer.valueOf(o[2].toString());
+            int prix = Integer.valueOf(o[0].toString()) * Integer.valueOf(o[1].toString()) * prixKeroseneParHeure + Integer.valueOf(o[2].toString());
             System.out.println("Prix [Paris-" + o[3].toString() + "] : " + prix + " €");
             tousLesPrix.add(prix);
         }
@@ -180,14 +167,14 @@ public class Seeder {
         Query queryVolsCorrespondantsALaDemande = em.createNamedQuery("Vol.getVolsCorrespondantsALaDemande", Object[].class);
         queryVolsCorrespondantsALaDemande.setParameter("date", Date.valueOf("2017-01-01"));
         queryVolsCorrespondantsALaDemande.setParameter("pays", "Guinee");
-        queryVolsCorrespondantsALaDemande.setParameter("capaciteLibre", new Integer(10));
+        queryVolsCorrespondantsALaDemande.setParameter("capaciteLibre", 10);
 
         List<Object[]> volsCorrespondantsALaDemande = queryVolsCorrespondantsALaDemande.getResultList();
         for (Object[] o : volsCorrespondantsALaDemande){
             System.out.println("============== VOL CORRESPONDANT ==============");
             System.out.println("Aéroport : " + o[0].toString());
-            System.out.println("Ville : " + o[1].toString());
-            System.out.println("Date arrivée : " + o[2].toString());
+            System.out.println("Pays : " + o[1].toString());
+            System.out.println("Date départ : " + o[2].toString());
             System.out.println("Capacité libre : " + o[3].toString());
             System.out.println("Prix : " + o[4].toString());
             System.out.println("===============================================");

@@ -1,7 +1,6 @@
 package behaviors;
 
 import impl.AvionImpl;
-import impl.BaseTarifImpl;
 import impl.AeroportImpl;
 import jade.core.Agent;
 import jade.core.behaviours.SimpleBehaviour;
@@ -37,10 +36,8 @@ public class SenderBehavior extends SimpleBehaviour{
 
         AeroportImpl ae = new AeroportImpl();
         AvionImpl ai = new AvionImpl();
-        BaseTarifImpl bi = new BaseTarifImpl();
 
         Vol v1 = new Vol(dateDepart, dateArrivee, TypeVol.Charter,
-                bi.getBaseTarifParNom("charter"),
                 ai.getAvionParImmatriculation("GB2-398-WYR"),
                 ae.getLieuParVille("Douala"));
 

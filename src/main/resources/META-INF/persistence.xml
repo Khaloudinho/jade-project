@@ -6,7 +6,6 @@
         <class>metier.Abonnement</class>
         <class>metier.Aeroport</class>
         <class>metier.Avion</class>
-        <class>metier.BaseTarif</class>
         <class>metier.Lieu</class>
         <class>metier.Reservation</class>
         <class>metier.Vol</class>

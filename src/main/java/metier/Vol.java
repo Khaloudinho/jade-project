@@ -8,14 +8,15 @@ import java.io.Serializable;
 import java.sql.Date;
 
 @Entity
-@NamedQuery(
-                // Trouver les vols pour un pays donné à une date donnée
-                name = "Vol.getVolsCorrespondantsALaDemande",
-                query = "SELECT v.aeroportArrivee.nomAeroport, v.aeroportArrivee.lieu.pays, v.dateArrivee, v.avion.capaciteLibre, v.prixVol " +
-                        "FROM Vol v " +
-                        "WHERE v.dateDepart = :date " +
-                        "AND v.aeroportArrivee.lieu.pays = :pays " +
-                        "AND v.avion.capaciteLibre >= :capaciteLibre "
+@NamedQuery(name = "Vol.getVolsCorrespondantsALaDemande",
+            query = "SELECT a.nomAeroport, l.pays, v.dateDepart, av.capaciteLibre, v.prixVol " +
+                    "FROM Vol v " +
+                    "JOIN v.avion av " +
+                    "JOIN v.aeroportArrivee a " +
+                    "JOIN a.lieu l " +
+                    "WHERE l.pays = :pays " +
+                    "AND v.dateDepart = :date " +
+                    "AND av.capaciteLibre >= :capaciteLibre "
 )
 
 public class Vol implements Serializable {
@@ -32,9 +33,6 @@ public class Vol implements Serializable {
     private TypeVol typeVol;
 
     @OneToOne
-    private BaseTarif baseTarif;
-
-    @OneToOne
     private Avion avion;
 
     @OneToOne
@@ -43,11 +41,10 @@ public class Vol implements Serializable {
     public Vol() {
     }
 
-    public Vol(Date dateDepart, Date dateArrivee, TypeVol typeVol, BaseTarif baseTarif, Avion avion, Aeroport aeroportArrivee) {
+    public Vol(Date dateDepart, Date dateArrivee, TypeVol typeVol, Avion avion, Aeroport aeroportArrivee) {
         this.dateDepart = dateDepart;
         this.dateArrivee = dateArrivee;
         this.typeVol = typeVol;
-        this.baseTarif = baseTarif;
         this.avion = avion;
         this.aeroportArrivee = aeroportArrivee;
         this.prixVol = 0;
@@ -83,14 +80,6 @@ public class Vol implements Serializable {
 
     public void setTypeVol(TypeVol typeVol) {
         this.typeVol = typeVol;
-    }
-
-    public BaseTarif getBaseTarif() {
-        return baseTarif;
-    }
-
-    public void setBaseTarif(BaseTarif baseTarif) {
-        this.baseTarif = baseTarif;
     }
 
     public Avion getAvion() {
