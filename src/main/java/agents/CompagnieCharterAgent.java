@@ -1,7 +1,7 @@
 package agents;
 
 import behaviors.vols.RegisterAgentBehavior;
-import behaviors.vols.VolManagementBehavior;
+import behaviors.vols.VolManagementBehaviorBIS;
 import containers.CompagnieContainer;
 import jade.core.AID;
 import jade.core.behaviours.ParallelBehaviour;
@@ -22,7 +22,8 @@ public class CompagnieCharterAgent extends GuiAgent implements Compagnie {
 
         ParallelBehaviour parallelBehaviour = new ParallelBehaviour();
         parallelBehaviour.addSubBehaviour(new RegisterAgentBehavior("Vols", "Vols-Association"));
-        parallelBehaviour.addSubBehaviour(new VolManagementBehavior(compagnieContainer));
+        //parallelBehaviour.addSubBehaviour(new VolManagementBehavior(compagnieContainer));
+        parallelBehaviour.addSubBehaviour(new VolManagementBehaviorBIS(this, null, compagnieContainer));
 
         addBehaviour(parallelBehaviour);
 
