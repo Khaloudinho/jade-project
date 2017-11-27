@@ -1,3 +1,6 @@
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import messages.VolAssociation;
 import metier.*;
 import util.TypeVol;
 
@@ -6,6 +9,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -13,7 +18,7 @@ import java.util.Set;
 
 
 public class Seeder {
-    public static void main(String [] args){
+    public static void main(String [] args) throws JsonProcessingException {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("jadeprojectPU");
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
@@ -170,6 +175,9 @@ public class Seeder {
         queryVolsCorrespondantsALaDemande.setParameter("capaciteLibre", 10);
 
         List<Object[]> volsCorrespondantsALaDemande = queryVolsCorrespondantsALaDemande.getResultList();
+
+        ArrayList<VolAssociation> volsPourLesAssociation = new ArrayList<VolAssociation>();
+
         for (Object[] o : volsCorrespondantsALaDemande){
             System.out.println("============== VOL CORRESPONDANT ==============");
             System.out.println("Aéroport : " + o[0].toString());
@@ -177,11 +185,36 @@ public class Seeder {
             System.out.println("Date départ : " + o[2].toString());
             System.out.println("Capacité libre : " + o[3].toString());
             System.out.println("Prix : " + o[4].toString());
+            System.out.println("IdVol : " + o[5].toString());
+            System.out.println("Pays : " + o[6].toString());
             System.out.println("===============================================");
+
+            //final String OLD_FORMAT = "dd-MM-yyyy";
+            final String OLD_FORMAT = "yyyy-MM-dd";
+            SimpleDateFormat sdf = new SimpleDateFormat(OLD_FORMAT);
+            Date dateVol = null;
+            try {
+                System.out.println(" DATE VOL " + o[2].toString());
+                String test = o[2].toString();
+                dateVol = Date.valueOf(test);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            volsPourLesAssociation.add(new VolAssociation(o[5].toString(), o[0].toString(), o[6].toString(), dateVol, Integer.parseInt(o[3].toString()), Integer.parseInt(o[4].toString().substring(0, o[4].toString().indexOf(".")))));
+
         }
 
         em.getTransaction().commit();
         em.close();
         emf.close();
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        //Object to JSON in String
+        String jsonInString = mapper.writeValueAsString(volsCorrespondantsALaDemande);
+
+        System.out.println(jsonInString.toString());
+
     }
 }

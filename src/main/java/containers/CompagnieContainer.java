@@ -11,6 +11,8 @@ import jade.wrapper.AgentController;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
+import java.util.UUID;
+
 
 public class CompagnieContainer extends Application {
 
@@ -26,7 +28,8 @@ public class CompagnieContainer extends Application {
             profile.setParameter(Profile.MAIN_HOST, "127.0.0.1");
             agentContainer = runtime.createAgentContainer(profile);
 
-            AgentController agentController = agentContainer.createNewAgent("CompagnieCharter","agents.CompagnieCharterAgent",new Object[]{this});
+            UUID agentId= UUID.randomUUID();
+            AgentController agentController = agentContainer.createNewAgent("CompagnieCharter"+agentId,"agents.CompagnieCharterAgent",new Object[]{this});
             agentController.start();
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,21 +1,16 @@
 package agents;
 
+import behaviors.vols.RegisterAgentBehavior;
+import behaviors.vols.VolManagementBehavior;
 import containers.CompagnieContainer;
 import jade.core.AID;
-import jade.core.behaviours.CyclicBehaviour;
-import jade.core.behaviours.OneShotBehaviour;
 import jade.core.behaviours.ParallelBehaviour;
-import jade.domain.DFService;
-import jade.domain.FIPAAgentManagement.DFAgentDescription;
-import jade.domain.FIPAAgentManagement.ServiceDescription;
-import jade.domain.FIPAException;
 import jade.gui.GuiAgent;
 import jade.gui.GuiEvent;
 import jade.lang.acl.ACLMessage;
 import jade.wrapper.ControllerException;
 
 public class CompagnieCharterAgent extends GuiAgent implements Compagnie {
-
     private CompagnieContainer compagnieContainer;
 
 
@@ -24,49 +19,13 @@ public class CompagnieCharterAgent extends GuiAgent implements Compagnie {
         compagnieContainer= (CompagnieContainer) getArguments()[0];
         compagnieContainer.setCompagnieAgent(this);
         System.out.println("Initialisation de l'agent "+this.getAID().getName());
+
         ParallelBehaviour parallelBehaviour = new ParallelBehaviour();
+        parallelBehaviour.addSubBehaviour(new RegisterAgentBehavior("Vols", "Vols-Association"));
+        parallelBehaviour.addSubBehaviour(new VolManagementBehavior(compagnieContainer));
+
         addBehaviour(parallelBehaviour);
-        parallelBehaviour.addSubBehaviour(new OneShotBehaviour() {
-            @Override
-            public void action() {
-                System.out.println("*************************************************");
-                DFAgentDescription dfa=new DFAgentDescription();
-                dfa.setName(getAID());
-                ServiceDescription sd = new ServiceDescription();
-                sd.setType("Vols");
-                sd.setName("Vols-associations");
-                dfa.addServices(sd);
-                try {
-                    DFService.register(myAgent, dfa);
-                } catch (FIPAException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
 
-        parallelBehaviour.addSubBehaviour(new CyclicBehaviour() {
-            @Override
-            public void action() {
-                ACLMessage aclMessage=receive();
-                if(aclMessage!=null){
-                    switch (aclMessage.getPerformative()){
-                        case ACLMessage.CFP:
-                            GuiEvent guiEvent = new GuiEvent(this, 1);
-                            guiEvent.addParameter(aclMessage.getContent());
-                            compagnieContainer.viewMessage(guiEvent);
-                            break;
-
-                        case ACLMessage.ACCEPT_PROPOSAL:
-                            break;
-
-                        default:
-                            break;
-                    }
-                }else {
-                    block();
-                }
-            }
-        });
     }
 
     @Override
