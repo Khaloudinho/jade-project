@@ -43,6 +43,7 @@ public class VolManagementBehavior extends ContractNetResponder {
         this.compagnieContainer = compagnieContainer;
     }
 
+    //{"pays":"Guinee","date":"2017-06-17","volume":"10"}
     @Override
     protected ACLMessage handleCfp(ACLMessage cfp) throws RefuseException, FailureException, NotUnderstoodException {
         //Recevoir le message d'Anne

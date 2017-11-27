@@ -9,6 +9,7 @@ import jade.core.behaviours.ParallelBehaviour;
 import jade.gui.GuiAgent;
 import jade.gui.GuiEvent;
 import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
 import jade.wrapper.ControllerException;
 
 public class CompagnieCharterAgent extends GuiAgent implements Compagnie {
@@ -25,10 +26,17 @@ public class CompagnieCharterAgent extends GuiAgent implements Compagnie {
         parallelBehaviour.addSubBehaviour(new RegisterAgentBehavior("Vols", "Vols-Association"));
         //parallelBehaviour.addSubBehaviour(new VolManagementBehavior(compagnieContainer));
         parallelBehaviour.addSubBehaviour(new VolManagementBehavior(this, null, compagnieContainer));
-        /*parallelBehaviour.addSubBehaviour(new CyclicBehaviour() {
+
+        /*MessageTemplate template = MessageTemplate.and(MessageTemplate.MatchProtocol("fipa-contract-net"), MessageTemplate.MatchPerformative(ACLMessage.CFP));
+        parallelBehaviour.addSubBehaviour(new CyclicBehaviour() {
                     @Override
                     public void action() {
-                        myAgent.addBehaviour(new VolManagementBehavior(myAgent, null, compagnieContainer));
+                        ACLMessage cfq = myAgent.receive(template);
+                        if(cfq!=null){
+                            myAgent.addBehaviour(new VolManagementBehavior(myAgent, template, compagnieContainer));
+                        }else {
+                            block();
+                        }
                     }
                 });*/
 
