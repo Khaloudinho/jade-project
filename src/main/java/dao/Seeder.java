@@ -13,9 +13,6 @@ import javax.persistence.Query;
 import java.sql.Date;
 import java.util.*;
 
-;
-
-
 public class Seeder {
 
     private static EntityManagerFactory emf = Persistence.createEntityManagerFactory("jadeprojectPU");
@@ -34,7 +31,7 @@ public class Seeder {
 
         //Object to JSON in String
         String volsReguliersInJSON = mapper.writeValueAsString(volsPourLesAssociation);
-        System.out.println("Réguliers : " + volsReguliersInJSON.toString());
+        System.out.println("Réguliers : " + volsReguliersInJSON);
 
         return volsPourLesAssociation;
     }
@@ -46,7 +43,6 @@ public class Seeder {
         queryVolsReguliersCorrespondantsALaDemande.setParameter("capaciteLibre", capaciteLibre);
         queryVolsReguliersCorrespondantsALaDemande.setParameter("typeVol", typeVol);
         return queryVolsReguliersCorrespondantsALaDemande.getResultList();
-
     }
 
     public static void showFlightsResults(List<Object[]> volsChartersCorrespondantsALaDemande){
@@ -76,9 +72,29 @@ public class Seeder {
                             TypeVol.Charter
                     )
             );
-
         }
         return volsPourLesAssociation;
+    }
+
+    public static Map<String, Integer> calculerPrixVols(){
+
+        final int prixKeroseneParHeure = 1140;
+
+        System.out.println("Requête : Vol.calculerLesPrixDesVols");
+        Query queryCalculerLesPrixDesVols = em.createNamedQuery("Vol.calculerLesPrixDesVols", Object[].class);
+        List<Object[]> paramPourCalculerLesPrixDesVols = queryCalculerLesPrixDesVols.getResultList();
+        Map<String, Integer> tousLesPrix = new HashMap<>();
+
+        for (Object[] o : paramPourCalculerLesPrixDesVols) {
+            String idVol = o[0].toString();
+            int consommationCarburant = Integer.valueOf(o[1].toString());
+            int heuresVolDepuisParis = Integer.valueOf(o[2].toString());
+            int taxeAeroport = Integer.valueOf(o[3].toString());
+            int prix = consommationCarburant * heuresVolDepuisParis * prixKeroseneParHeure + taxeAeroport;
+            tousLesPrix.put(idVol, prix);
+        }
+
+        return tousLesPrix;
     }
 
     public static void main(String [] args) throws JsonProcessingException {
@@ -205,29 +221,11 @@ public class Seeder {
             em.persist(abo);
         }
 
-        final int prixKeroseneParHeure = 1140;
-
-        System.out.println("Requête : Vol.calculerLesPrixDesVols");
-        Query queryCalculerLesPrixDesVols = em.createNamedQuery("Vol.calculerLesPrixDesVols", Object[].class);
-        List<Object[]> paramPourCalculerLesPrixDesVols = queryCalculerLesPrixDesVols.getResultList();
-        Map<String, Integer> tousLesPrix = new HashMap<>();
-
-        for (Object[] o : paramPourCalculerLesPrixDesVols) {
-            String idVol = o[0].toString();
-            int consommationCarburant = Integer.valueOf(o[1].toString());
-            int heuresVolDepuisParis = Integer.valueOf(o[2].toString());
-            int taxeAeroport = Integer.valueOf(o[3].toString());
-            int prix = consommationCarburant * heuresVolDepuisParis * prixKeroseneParHeure + taxeAeroport;
-            tousLesPrix.put(idVol, prix);
-        }
+        final Map<String, Integer> prixVols = calculerPrixVols();
 
         for (Vol vol : vols) {
-            vol.setPrixVol(tousLesPrix.get(vol.getIdVol()));
+            vol.setPrixVol(prixVols.get(vol.getIdVol()));
         }
-
-
-        getVols(TypeVol.Regulier,"2017-06-17","Guinee",10);
-        getVols(TypeVol.Charter,"2017-06-17","Guinee",10);
 
         em.getTransaction().commit();
         em.close();

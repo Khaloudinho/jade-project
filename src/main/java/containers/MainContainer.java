@@ -7,6 +7,8 @@ import jade.util.ExtendedProperties;
 import jade.util.leap.Properties;
 import jade.wrapper.ControllerException;
 
+import java.awt.*;
+
 public class MainContainer {
 
     public static void main(String[] args) {
@@ -16,8 +18,10 @@ public class MainContainer {
         properties.setProperty(Profile.GUI,"true");
         Profile profile = new ProfileImpl(properties);
         jade.wrapper.AgentContainer mainContainer = runtime.createMainContainer(profile);
+        CompagnieContainer c = new CompagnieContainer();
 
         try {
+            c.startContainer();
             mainContainer.start();
         } catch (ControllerException e) {
             e.printStackTrace();

@@ -20,10 +20,7 @@ import util.TypeVol;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import javax.persistence.Query;
-import java.sql.Date;
 import java.util.ArrayList;
-import java.util.List;
 
 public class VolManagementBehavior extends ContractNetResponder {
 
@@ -55,17 +52,16 @@ public class VolManagementBehavior extends ContractNetResponder {
         //On construit un objet
         ObjectMapper mapper = new ObjectMapper();
 
-        DemandeVols demandeVols = null;
+        DemandeVols demandeVols;
         //JSON from String to Object
+
         try {
-            //FIX ME static mapper
+            // FIX ME static mapper
             demandeVols = mapper.readValue(message, DemandeVols.class);
             System.out.println(message.toString());
             System.out.println(demandeVols.toString());
 
-            //On utilise cet objet (ses attributs/) pour effectuer la requete / cet objet n'est pas persiste
-
-            //FIX ME refractor with a design pattern
+            // FIX ME refractor with a design pattern
             EntityManagerFactory emf = Persistence.createEntityManagerFactory("jadeprojectPU");
             EntityManager em = emf.createEntityManager();
             em.getTransaction().begin();
@@ -85,7 +81,7 @@ public class VolManagementBehavior extends ContractNetResponder {
             //Retourner une propositions au groupe des associations
             ACLMessage messageAssociation = new ACLMessage(ACLMessage.PROPOSE);
             messageAssociation.setContent(messageAssociationContent);
-            System.out.println("TEST MESSAGE :" + messageAssociation.getContent());
+            System.out.println("=========> Test Message : " + messageAssociation.getContent());
 
             messageAssociation.addReplyTo(cfp.getSender());
 
