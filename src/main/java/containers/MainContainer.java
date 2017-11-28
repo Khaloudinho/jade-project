@@ -7,7 +7,6 @@ import jade.util.ExtendedProperties;
 import jade.util.leap.Properties;
 import jade.wrapper.ControllerException;
 
-
 public class MainContainer {
 
     public static void main(String[] args) {
@@ -23,7 +22,6 @@ public class MainContainer {
         } catch (ControllerException e) {
             e.printStackTrace();
         }
-
     }
 
 }

@@ -11,32 +11,34 @@ import jade.lang.acl.ACLMessage;
 import jade.wrapper.ControllerException;
 
 public class CompagnieCharterAgent extends GuiAgent implements Compagnie {
-    private CompagnieContainer compagnieContainer;
 
+    private CompagnieContainer compagnieContainer;
 
     @Override
     protected void setup(){
         compagnieContainer= (CompagnieContainer) getArguments()[0];
         compagnieContainer.setCompagnieAgent(this);
-        System.out.println("Initialisation de l'agent "+this.getAID().getName());
+        System.out.println("Initialisation de l'agent " + this.getAID().getName());
 
         ParallelBehaviour parallelBehaviour = new ParallelBehaviour();
         parallelBehaviour.addSubBehaviour(new RegisterAgentBehavior("Vols", "Vols-Association"));
         //parallelBehaviour.addSubBehaviour(new VolManagementBehavior(compagnieContainer));
         parallelBehaviour.addSubBehaviour(new VolManagementBehavior(this, null, compagnieContainer));
 
-        /*MessageTemplate template = MessageTemplate.and(MessageTemplate.MatchProtocol("fipa-contract-net"), MessageTemplate.MatchPerformative(ACLMessage.CFP));
+        /*
+        MessageTemplate template = MessageTemplate.and(MessageTemplate.MatchProtocol("fipa-contract-net"), MessageTemplate.MatchPerformative(ACLMessage.CFP));
         parallelBehaviour.addSubBehaviour(new CyclicBehaviour() {
                     @Override
                     public void action() {
                         ACLMessage cfq = myAgent.receive(template);
-                        if(cfq!=null){
+                        if (cfq!=null) {
                             myAgent.addBehaviour(new VolManagementBehavior(myAgent, template, compagnieContainer));
-                        }else {
+                        } else {
                             block();
                         }
                     }
-                });*/
+        });
+        */
 
         addBehaviour(parallelBehaviour);
 
@@ -50,7 +52,7 @@ public class CompagnieCharterAgent extends GuiAgent implements Compagnie {
     @Override
     protected void beforeMove() {
         try {
-            System.out.println("Avant migration ... du container "+this.getContainerController().getContainerName());
+            System.out.println("Avant migration ... du container " + this.getContainerController().getContainerName());
         } catch (ControllerException e) {
             e.printStackTrace();
         }
@@ -59,7 +61,7 @@ public class CompagnieCharterAgent extends GuiAgent implements Compagnie {
     @Override
     protected void afterMove() {
         try {
-            System.out.println("Apres migration ..."+this.getContainerController().getContainerName());
+            System.out.println("Apres migration ..." + this.getContainerController().getContainerName());
         } catch (ControllerException e) {
             e.printStackTrace();
         }

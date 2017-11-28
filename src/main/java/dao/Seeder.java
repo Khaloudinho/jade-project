@@ -13,11 +13,10 @@ import javax.persistence.Query;
 import java.sql.Date;
 import java.util.*;
 
-;
-
-
 public class Seeder {
+
     public static void main(String [] args) throws JsonProcessingException {
+
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("jadeprojectPU");
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();

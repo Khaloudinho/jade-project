@@ -121,6 +121,7 @@ public class VolManagementBehavior extends ContractNetResponder {
             messageAssociation.addReplyTo(cfp.getSender());
 
             return messageAssociation;
+
         } catch (Exception e) {
             System.out.println("Format de la demande invalide");
             String formatErrorMessageContent = "Erreur dans le format de la demande";

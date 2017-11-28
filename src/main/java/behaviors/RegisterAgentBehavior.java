@@ -22,7 +22,7 @@ public class RegisterAgentBehavior extends OneShotBehaviour{
     @Override
     public void action() {
         System.out.println("*************************************************");
-        DFAgentDescription dfa=new DFAgentDescription();
+        DFAgentDescription dfa = new DFAgentDescription();
         dfa.setName(super.myAgent.getAID());
         ServiceDescription sd = new ServiceDescription();
         sd.setType(serviceType);

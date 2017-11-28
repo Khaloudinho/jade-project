@@ -11,7 +11,9 @@ import java.sql.Date;
 @NamedQueries({
         @NamedQuery(
                 name = "Vol.getVolsCorrespondantsALaDemande",
-                query = "SELECT v.aeroportArrivee.nomAeroport, v.aeroportArrivee.lieu.pays, v.dateArrivee, v.avion.capaciteLibre, v.prixVol, v.idVol " +
+                query = "SELECT v.aeroportArrivee.nomAeroport, v.aeroportArrivee.lieu.pays, " +
+                        "v.dateArrivee, v.avion.capaciteLibre, v.prixVol, " +
+                        "v.idVol " +
                         "FROM Vol v " +
                         "WHERE v.dateArrivee = :date " +
                         "AND v.aeroportArrivee.lieu.pays = :pays " +
