@@ -9,12 +9,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import java.lang.reflect.Type;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 public class Seeder {
@@ -146,62 +145,75 @@ public class Seeder {
 
         final int prixKeroseneParHeure = 1140;
 
-        System.out.println("************ Price calculus below ****************");
-        String stringQuery1 = "SELECT a.consommationCarburant, ae.heuresVolDepuisParis, ae.taxeAeroport, l.ville " +
-                                "FROM Vol v JOIN v.aeroportArrivee ae JOIN v.avion a JOIN ae.lieu l ";
+        System.out.println("Requête : Vol.calculerLesPrixDesVols");
+        Query queryCalculerLesPrixDesVols = em.createNamedQuery("Vol.calculerLesPrixDesVols", Object[].class);
+        List<Object[]> paramPourCalculerLesPrixDesVols = queryCalculerLesPrixDesVols.getResultList();
+        Map<String, Integer> tousLesPrix = new HashMap<>();
 
-        Query query1 = em.createQuery(stringQuery1);
-        List<Object[]> paramsForPrice = query1.getResultList();
-        List<Integer> tousLesPrix = new ArrayList<>();
-
-        for (Object[] o : paramsForPrice) {
-            int prix = Integer.valueOf(o[0].toString()) * Integer.valueOf(o[1].toString()) * prixKeroseneParHeure + Integer.valueOf(o[2].toString());
-            System.out.println("Prix [Paris-" + o[3].toString() + "] : " + prix + " €");
-            tousLesPrix.add(prix);
+        for (Object[] o : paramPourCalculerLesPrixDesVols) {
+            String idVol = o[0].toString();
+            int prix = Integer.valueOf(o[1].toString()) * Integer.valueOf(o[2].toString()) * prixKeroseneParHeure + Integer.valueOf(o[3].toString());
+            tousLesPrix.put(idVol, prix);
         }
 
-        v1.setPrixVol(tousLesPrix.get(0));
-        v2.setPrixVol(tousLesPrix.get(1));
-        v3.setPrixVol(tousLesPrix.get(2));
-        v4.setPrixVol(tousLesPrix.get(3));
-        v5.setPrixVol(tousLesPrix.get(4));
-        v6.setPrixVol(tousLesPrix.get(5));
-        v7.setPrixVol(tousLesPrix.get(6));
+        for (Vol vol : vols) {
+            vol.setPrixVol(tousLesPrix.get(vol.getIdVol()));
+        }
 
-        System.out.println("Requête : Vol.getVolsCorrespondantsALaDemande");
-        Query queryVolsCorrespondantsALaDemande = em.createNamedQuery("Vol.getVolsCorrespondantsALaDemande", Object[].class);
-        queryVolsCorrespondantsALaDemande.setParameter("date", Date.valueOf("2017-01-01"));
-        queryVolsCorrespondantsALaDemande.setParameter("pays", "Guinee");
-        queryVolsCorrespondantsALaDemande.setParameter("capaciteLibre", 10);
+        System.out.println("Requête : Vol.getVolsReguliersCorrespondantsALaDemande");
+        Query queryVolsReguliersCorrespondantsALaDemande = em.createNamedQuery("Vol.getVolsCorrespondantsALaDemande", Object[].class);
+        queryVolsReguliersCorrespondantsALaDemande.setParameter("date", Date.valueOf("2017-01-01"));
+        queryVolsReguliersCorrespondantsALaDemande.setParameter("pays", "Guinee");
+        queryVolsReguliersCorrespondantsALaDemande.setParameter("capaciteLibre", 10);
+        queryVolsReguliersCorrespondantsALaDemande.setParameter("typeVol", TypeVol.Regulier);
 
-        List<Object[]> volsCorrespondantsALaDemande = queryVolsCorrespondantsALaDemande.getResultList();
+        List<Object[]> volsReguliersCorrespondantsALaDemande = queryVolsReguliersCorrespondantsALaDemande.getResultList();
 
-        ArrayList<VolAssociation> volsPourLesAssociation = new ArrayList<>();
+        ArrayList<VolAssociation> volsReguliersPourLesAssociation = new ArrayList<>();
 
-        for (Object[] o : volsCorrespondantsALaDemande){
-            System.out.println("============== VOL CORRESPONDANT ==============");
+        for (Object[] o : volsReguliersCorrespondantsALaDemande){
+            System.out.println("============== VOL REGULIER CORRESPONDANT ==============");
             System.out.println("Aéroport : " + o[0].toString());
             System.out.println("Pays : " + o[1].toString());
-            System.out.println("Date départ : " + o[2].toString());
+            System.out.println("Date arrivée : " + o[2].toString());
             System.out.println("Capacité libre : " + o[3].toString());
             System.out.println("Prix : " + o[4].toString());
             System.out.println("IdVol : " + o[5].toString());
-            System.out.println("===============================================");
+            System.out.println("========================================================");
 
-            //final String OLD_FORMAT = "dd-MM-yyyy";
-            final String OLD_FORMAT = "yyyy-MM-dd";
-            SimpleDateFormat sdf = new SimpleDateFormat(OLD_FORMAT);
-            Date dateVol = null;
-            try {
-                System.out.println(" DATE VOL " + o[2].toString());
-                String test = o[2].toString();
-                dateVol = Date.valueOf(test);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            volsReguliersPourLesAssociation.add(
+                    new VolAssociation(o[5].toString(), o[0].toString(), o[1].toString(), Date.valueOf(o[2].toString()),
+                            Integer.parseInt(o[3].toString()), Integer.parseInt(o[4].toString().substring(0, o[4].toString().indexOf(".")))
+                    )
+            );
+        }
 
-            volsPourLesAssociation.add(new VolAssociation(o[5].toString(), o[0].toString(), o[1].toString(), dateVol, Integer.parseInt(o[3].toString()), Integer.parseInt(o[4].toString().substring(0, o[4].toString().indexOf(".")))));
+        System.out.println("Requête : Vol.getVolsChartersCorrespondantsALaDemande");
+        Query queryVolsChartersCorrespondantsALaDemande = em.createNamedQuery("Vol.getVolsCorrespondantsALaDemande", Object[].class);
+        queryVolsChartersCorrespondantsALaDemande.setParameter("date", Date.valueOf("2017-01-01"));
+        queryVolsChartersCorrespondantsALaDemande.setParameter("pays", "Guinee");
+        queryVolsChartersCorrespondantsALaDemande.setParameter("capaciteLibre", 10);
+        queryVolsChartersCorrespondantsALaDemande.setParameter("typeVol", TypeVol.Charter);
 
+        List<Object[]> volsChartersCorrespondantsALaDemande = queryVolsChartersCorrespondantsALaDemande.getResultList();
+
+        ArrayList<VolAssociation> volsChartersPourLesAssociation = new ArrayList<>();
+
+        for (Object[] o : volsChartersCorrespondantsALaDemande){
+            System.out.println("============== VOL CHARTER CORRESPONDANT ==============");
+            System.out.println("Aéroport : " + o[0].toString());
+            System.out.println("Pays : " + o[1].toString());
+            System.out.println("Date arrivée : " + o[2].toString());
+            System.out.println("Capacité libre : " + o[3].toString());
+            System.out.println("Prix : " + o[4].toString());
+            System.out.println("IdVol : " + o[5].toString());
+            System.out.println("========================================================");
+
+            volsChartersPourLesAssociation.add(
+                    new VolAssociation(o[5].toString(), o[0].toString(), o[1].toString(), Date.valueOf(o[2].toString()),
+                            Integer.parseInt(o[3].toString()), Integer.parseInt(o[4].toString().substring(0, o[4].toString().indexOf(".")))
+                    )
+            );
         }
 
         em.getTransaction().commit();
@@ -211,9 +223,11 @@ public class Seeder {
         ObjectMapper mapper = new ObjectMapper();
 
         //Object to JSON in String
-        String jsonInString = mapper.writeValueAsString(volsCorrespondantsALaDemande);
+        String volsReguliersInJSON = mapper.writeValueAsString(volsReguliersCorrespondantsALaDemande);
+        String volsChartersJSON = mapper.writeValueAsString(volsChartersCorrespondantsALaDemande);
 
-        System.out.println(jsonInString.toString());
+        System.out.println("Réguliers : " + volsReguliersInJSON.toString());
+        System.out.println("Charters : " + volsChartersJSON.toString());
 
         DemandeVols demandeVols = new DemandeVols("RDC", new Date(2017,11, 11), 30);
 
