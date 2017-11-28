@@ -1,4 +1,4 @@
-package behaviors;
+package behaviors.examples;
 
 import jade.core.AID;
 import jade.core.Agent;

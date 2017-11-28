@@ -36,9 +36,10 @@ public class CompagnieContainer extends Application {
         }
     }
 
-    public void viewMessage(GuiEvent guiEvent) {
+    public String viewMessage(GuiEvent guiEvent) {
         String message = guiEvent.getParameter(0).toString();
         System.out.println("COMPAGNIE CONTAINER : " + message);
+        return message;
         //observableList.add(message);
     }
 

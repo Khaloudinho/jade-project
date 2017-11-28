@@ -1,4 +1,4 @@
-package behaviors.vols;
+package behaviors.examples;
 
 import containers.CompagnieContainer;
 import jade.core.AID;
