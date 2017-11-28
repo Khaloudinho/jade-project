@@ -97,7 +97,9 @@ public class VolManagementBehavior extends ContractNetResponder {
 
                 volsChartersPourLesAssociation.add(
                         new VolAssociation(o[5].toString(), o[0].toString(), o[1].toString(), Date.valueOf(o[2].toString()),
-                                Integer.parseInt(o[3].toString()), Integer.parseInt(o[4].toString().substring(0, o[4].toString().indexOf(".")))
+                                Integer.parseInt(o[3].toString()),
+                                Integer.parseInt(o[4].toString().substring(0, o[4].toString().indexOf("."))),
+                                TypeVol.Charter
                         )
                 );
             }

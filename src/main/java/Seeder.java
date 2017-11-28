@@ -1,6 +1,6 @@
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import messages.VolAssociation;
+import messages.association.VolAssociation;
 import metier.*;
 import util.TypeVol;
 
@@ -10,6 +10,8 @@ import javax.persistence.Persistence;
 import javax.persistence.Query;
 import java.sql.Date;
 import java.util.*;
+
+;
 
 
 public class Seeder {
