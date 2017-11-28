@@ -14,6 +14,7 @@ import jade.lang.acl.MessageTemplate;
 import jade.proto.ContractNetResponder;
 import messages.association.DemandeVols;
 import messages.association.VolAssociation;
+import util.TypeVol;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -59,11 +60,12 @@ public class VolManagementBehavior extends ContractNetResponder {
         DemandeVols demandeVols = null;
         //JSON from String to Object
         try {
+            //FIX ME static mapper
             demandeVols = mapper.readValue(message, DemandeVols.class);
             System.out.println(message.toString());
             System.out.println(demandeVols.toString());
 
-            //On utilise cet objet (ses attributs/champ) pour effectuer la requete / cet objet n'est pas persiste
+            //On utilise cet objet (ses attributs/) pour effectuer la requete / cet objet n'est pas persiste
 
             //FIX ME refractor with a design pattern
             EntityManagerFactory emf = Persistence.createEntityManagerFactory("jadeprojectPU");
@@ -71,52 +73,72 @@ public class VolManagementBehavior extends ContractNetResponder {
             em.getTransaction().begin();
 
             //FIX ME use entity manager
-            Query queryVolsCorrespondantsALaDemande = em.createNamedQuery("Vol.getVolsCorrespondantsALaDemande", Object[].class);
-            queryVolsCorrespondantsALaDemande.setParameter("date", demandeVols.getDate());
-            queryVolsCorrespondantsALaDemande.setParameter("pays", demandeVols.getPays());
-            queryVolsCorrespondantsALaDemande.setParameter("capaciteLibre", demandeVols.getVolume());
+            System.out.println("Requête : Vol.getVolsChartersCorrespondantsALaDemande");
 
-            //On recupere le resultat de la requete
-            List<Object[]> volsCorrespondantsALaDemande = queryVolsCorrespondantsALaDemande.getResultList();
+            Query queryVolsChartersCorrespondantsALaDemande = em.createNamedQuery("Vol.getVolsCorrespondantsALaDemande", Object[].class);
+            queryVolsChartersCorrespondantsALaDemande.setParameter("date", demandeVols.getDate());
+            queryVolsChartersCorrespondantsALaDemande.setParameter("pays", demandeVols.getPays());
+            queryVolsChartersCorrespondantsALaDemande.setParameter("capaciteLibre", demandeVols.getVolume());
+            queryVolsChartersCorrespondantsALaDemande.setParameter("typeVol", TypeVol.Charter);
 
-            System.out.println("TAILLE de la liste de vols trouves : "+ volsCorrespondantsALaDemande.size());
+            List<Object[]> volsChartersCorrespondantsALaDemande = queryVolsChartersCorrespondantsALaDemande.getResultList();
+
+            ArrayList<VolAssociation> volsChartersPourLesAssociation = new ArrayList<>();
+
+            for (Object[] o : volsChartersCorrespondantsALaDemande){
+                System.out.println("============== VOL CHARTER CORRESPONDANT ==============");
+                System.out.println("Aéroport : " + o[0].toString());
+                System.out.println("Pays : " + o[1].toString());
+                System.out.println("Date arrivée : " + o[2].toString());
+                System.out.println("Capacité libre : " + o[3].toString());
+                System.out.println("Prix : " + o[4].toString());
+                System.out.println("IdVol : " + o[5].toString());
+                System.out.println("========================================================");
+
+                volsChartersPourLesAssociation.add(
+                        new VolAssociation(o[5].toString(), o[0].toString(), o[1].toString(), Date.valueOf(o[2].toString()),
+                                Integer.parseInt(o[3].toString()), Integer.parseInt(o[4].toString().substring(0, o[4].toString().indexOf(".")))
+                        )
+                );
+            }
 
             em.getTransaction().commit();
             em.close();
             emf.close();
 
             //1 On renvoie tous les vols ==> degeulasse
-            ArrayList<VolAssociation> volsPourLesAssociation = new ArrayList<>();
+            //ArrayList<VolAssociation> volsPourLesAssociation = new ArrayList<>();
 
-            for (Object[] o : volsCorrespondantsALaDemande){
-                System.out.println("============== VOL CORRESPONDANT ==============");
-                System.out.println("Aéroport : " + o[0].toString());
-                System.out.println("Pays : " + o[1].toString());
-                System.out.println("Date départ : " + o[2].toString());
-                System.out.println("Capacité libre : " + o[3].toString());
-                System.out.println("Prix : " + o[4].toString());
-                System.out.println("IdVol : " + o[5].toString());
-                System.out.println("===============================================");
+            //for (Object[] o : volsCorrespondantsALaDemande){
+            //   System.out.println("============== VOL CORRESPONDANT ==============");
+            //   System.out.println("Aéroport : " + o[0].toString());
+            //   System.out.println("Pays : " + o[1].toString());
+            //   System.out.println("Date départ : " + o[2].toString());
+            //   System.out.println("Capacité libre : " + o[3].toString());
+            //   System.out.println("Prix : " + o[4].toString());
+            //   System.out.println("IdVol : " + o[5].toString());
+            //   System.out.println("===============================================");
 
-                //final String OLD_FORMAT = "dd-MM-yyyy";
-                final String OLD_FORMAT = "yyyy-MM-dd";
-                SimpleDateFormat sdf = new SimpleDateFormat(OLD_FORMAT);
-                Date dateVol = null;
-                try {
-                    System.out.println(" DATE VOL " + o[2].toString());
-                    String test = o[2].toString();
-                    dateVol = Date.valueOf(test);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            //   //final String OLD_FORMAT = "dd-MM-yyyy";
+            //   final String OLD_FORMAT = "yyyy-MM-dd";
+            //   SimpleDateFormat sdf = new SimpleDateFormat(OLD_FORMAT);
+            //   Date dateVol = null;
+            //   try {
+            //       System.out.println(" DATE VOL " + o[2].toString());
+            //       String test = o[2].toString();
+            //       dateVol = Date.valueOf(test);
+            //   } catch (Exception e) {
+            //       e.printStackTrace();
+            //   }
 
-                volsPourLesAssociation.add(new VolAssociation(o[5].toString(), o[0].toString(), o[1].toString(), dateVol, Integer.parseInt(o[3].toString()), Integer.parseInt(o[4].toString().substring(0, o[4].toString().indexOf(".")))));
+            //   volsPourLesAssociation.add(new VolAssociation(o[5].toString(), o[0].toString(), o[1].toString(), dateVol, Integer.parseInt(o[3].toString()), Integer.parseInt(o[4].toString().substring(0, o[4].toString().indexOf(".")))));
 
-            }
+            //}
 
             String messageAssociationContent = "";
             try {
-                messageAssociationContent = mapper.writeValueAsString(volsPourLesAssociation);
+            //    messageAssociationContent = mapper.writeValueAsString(volsPourLesAssociation);
+                messageAssociationContent = mapper.writeValueAsString(volsChartersCorrespondantsALaDemande);
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
