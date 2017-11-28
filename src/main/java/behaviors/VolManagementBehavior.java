@@ -3,6 +3,7 @@ package behaviors;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import containers.CompagnieContainer;
+import dao.Seeder;
 import jade.core.Agent;
 import jade.core.behaviours.DataStore;
 import jade.domain.FIPAAgentManagement.FailureException;
@@ -72,39 +73,7 @@ public class VolManagementBehavior extends ContractNetResponder {
             //FIX ME use entity manager
             System.out.println("Requête : Vol.getVolsChartersCorrespondantsALaDemande");
 
-            Query queryVolsChartersCorrespondantsALaDemande = em.createNamedQuery("Vol.getVolsCorrespondantsALaDemande", Object[].class);
-            queryVolsChartersCorrespondantsALaDemande.setParameter("date", demandeVols.getDate());
-            queryVolsChartersCorrespondantsALaDemande.setParameter("pays", demandeVols.getPays());
-            queryVolsChartersCorrespondantsALaDemande.setParameter("capaciteLibre", demandeVols.getVolume());
-            queryVolsChartersCorrespondantsALaDemande.setParameter("typeVol", TypeVol.Charter);
-
-            List<Object[]> volsChartersCorrespondantsALaDemande = queryVolsChartersCorrespondantsALaDemande.getResultList();
-
-            ArrayList<VolAssociation> volsChartersPourLesAssociation = new ArrayList<>();
-
-            for (Object[] o : volsChartersCorrespondantsALaDemande){
-                System.out.println("============== VOL CHARTER CORRESPONDANT ==============");
-                System.out.println("Aéroport : " + o[0].toString());
-                System.out.println("Pays : " + o[1].toString());
-                System.out.println("Date arrivée : " + o[2].toString());
-                System.out.println("Capacité libre : " + o[3].toString());
-                System.out.println("Prix : " + o[4].toString());
-                System.out.println("IdVol : " + o[5].toString());
-                System.out.println("========================================================");
-
-                volsChartersPourLesAssociation.add(
-                        new VolAssociation(o[5].toString(), o[0].toString(), o[1].toString(), Date.valueOf(o[2].toString()),
-                                Integer.parseInt(o[3].toString()),
-                                Integer.parseInt(o[4].toString().substring(0, o[4].toString().indexOf("."))),
-                                TypeVol.Charter
-                        )
-                );
-            }
-
-            em.getTransaction().commit();
-            em.close();
-            emf.close();
-
+            ArrayList<VolAssociation> volsChartersCorrespondantsALaDemande = Seeder.getVols(TypeVol.Charter, String.valueOf(demandeVols.getDate()), demandeVols.getPays(), demandeVols.getVolume());
 
             String messageAssociationContent = "";
             try {

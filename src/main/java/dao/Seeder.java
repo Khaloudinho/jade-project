@@ -17,11 +17,73 @@ import java.util.*;
 
 
 public class Seeder {
-    public static void main(String [] args) throws JsonProcessingException {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("jadeprojectPU");
-        EntityManager em = emf.createEntityManager();
-        em.getTransaction().begin();
 
+    private static EntityManagerFactory emf = Persistence.createEntityManagerFactory("jadeprojectPU");
+    private static EntityManager em = emf.createEntityManager();
+    private static ObjectMapper mapper = new ObjectMapper();
+
+    public static ArrayList<VolAssociation> getVols(TypeVol typeVol, String date, String pays, int capaciteLibre) throws JsonProcessingException {
+
+        String query = "Vol.getVolsCorrespondantsALaDemande";
+        ArrayList<VolAssociation> volsPourLesAssociation;
+        List<Object[]> volsCorrespondantsALaDemande;
+
+        volsCorrespondantsALaDemande = daoGetvols(typeVol,query,date,pays,capaciteLibre);
+        showFlightsResults(volsCorrespondantsALaDemande);
+        volsPourLesAssociation = formatVol(volsCorrespondantsALaDemande);
+
+        //Object to JSON in String
+        String volsReguliersInJSON = mapper.writeValueAsString(volsPourLesAssociation);
+        System.out.println("Réguliers : " + volsReguliersInJSON.toString());
+
+        return volsPourLesAssociation;
+    }
+
+    public static List<Object[]> daoGetvols(TypeVol typeVol, String query, String date, String pays, int capaciteLibre){
+        Query queryVolsReguliersCorrespondantsALaDemande = em.createNamedQuery(query, Object[].class);
+        queryVolsReguliersCorrespondantsALaDemande.setParameter("date", Date.valueOf(date));
+        queryVolsReguliersCorrespondantsALaDemande.setParameter("pays", pays);
+        queryVolsReguliersCorrespondantsALaDemande.setParameter("capaciteLibre", capaciteLibre);
+        queryVolsReguliersCorrespondantsALaDemande.setParameter("typeVol", typeVol);
+        return queryVolsReguliersCorrespondantsALaDemande.getResultList();
+
+    }
+
+    public static void showFlightsResults(List<Object[]> volsChartersCorrespondantsALaDemande){
+        for (Object[] o : volsChartersCorrespondantsALaDemande){
+            System.out.println("============== VOL CORRESPONDANT ==============");
+            System.out.println("Aéroport : " + o[0].toString());
+            System.out.println("Pays : " + o[1].toString());
+            System.out.println("Date arrivée : " + o[2].toString());
+            System.out.println("Capacité libre : " + o[3].toString());
+            System.out.println("Prix : " + o[4].toString());
+            System.out.println("IdVol : " + o[5].toString());
+            System.out.println("========================================================");
+        }
+    }
+
+    public static ArrayList<VolAssociation> formatVol(List<Object[]> volsCorrespondantsALaDemande){
+        ArrayList<VolAssociation> volsPourLesAssociation = new ArrayList<>();
+        for (Object[] o : volsCorrespondantsALaDemande){
+            volsPourLesAssociation.add(
+                    new VolAssociation(
+                            o[5].toString(),
+                            o[0].toString(),
+                            o[1].toString(),
+                            Date.valueOf(o[2].toString()),
+                            Integer.parseInt(o[3].toString()),
+                            Integer.parseInt(o[4].toString().substring(0, o[4].toString().indexOf("."))),
+                            TypeVol.Charter
+                    )
+            );
+
+        }
+        return volsPourLesAssociation;
+    }
+
+    public static void main(String [] args) throws JsonProcessingException {
+
+        em.getTransaction().begin();
         Set<Lieu> lieux = new HashSet<>();
         Lieu l1 = new Lieu("Conakry", "Guinee");
         Lieu l2 = new Lieu("Dakar", "Senegal");
@@ -163,84 +225,12 @@ public class Seeder {
             vol.setPrixVol(tousLesPrix.get(vol.getIdVol()));
         }
 
-        System.out.println("Requête : Vol.getVolsReguliersCorrespondantsALaDemande");
-        Query queryVolsReguliersCorrespondantsALaDemande = em.createNamedQuery("Vol.getVolsCorrespondantsALaDemande", Object[].class);
-        queryVolsReguliersCorrespondantsALaDemande.setParameter("date", Date.valueOf("2017-06-17"));
-        queryVolsReguliersCorrespondantsALaDemande.setParameter("pays", "Guinee");
-        queryVolsReguliersCorrespondantsALaDemande.setParameter("capaciteLibre", 10);
-        queryVolsReguliersCorrespondantsALaDemande.setParameter("typeVol", TypeVol.Regulier);
 
-        List<Object[]> volsReguliersCorrespondantsALaDemande = queryVolsReguliersCorrespondantsALaDemande.getResultList();
-
-        ArrayList<VolAssociation> volsReguliersPourLesAssociation = new ArrayList<>();
-
-        for (Object[] o : volsReguliersCorrespondantsALaDemande){
-            System.out.println("============== VOL REGULIER CORRESPONDANT ==============");
-            System.out.println("Aéroport : " + o[0].toString());
-            System.out.println("Pays : " + o[1].toString());
-            System.out.println("Date arrivée : " + o[2].toString());
-            System.out.println("Capacité libre : " + o[3].toString());
-            System.out.println("Prix : " + o[4].toString());
-            System.out.println("IdVol : " + o[5].toString());
-            System.out.println("========================================================");
-
-            volsReguliersPourLesAssociation.add(
-                    new VolAssociation(o[5].toString(),
-                            o[0].toString(), o[1].toString(),
-                            Date.valueOf(o[2].toString()),
-                            Integer.parseInt(o[3].toString()),
-                            Integer.parseInt(o[4].toString().substring(0, o[4].toString().indexOf("."))),
-                            TypeVol.Regulier
-                    )
-            );
-        }
-
-        System.out.println("Requête : Vol.getVolsChartersCorrespondantsALaDemande");
-        Query queryVolsChartersCorrespondantsALaDemande = em.createNamedQuery("Vol.getVolsCorrespondantsALaDemande", Object[].class);
-        queryVolsChartersCorrespondantsALaDemande.setParameter("date", Date.valueOf("2017-05-16"));
-        queryVolsChartersCorrespondantsALaDemande.setParameter("pays", "Guinee");
-        queryVolsChartersCorrespondantsALaDemande.setParameter("capaciteLibre", 10);
-        queryVolsChartersCorrespondantsALaDemande.setParameter("typeVol", TypeVol.Charter);
-
-        List<Object[]> volsChartersCorrespondantsALaDemande = queryVolsChartersCorrespondantsALaDemande.getResultList();
-
-        ArrayList<VolAssociation> volsChartersPourLesAssociation = new ArrayList<>();
-
-        for (Object[] o : volsChartersCorrespondantsALaDemande){
-            System.out.println("============== VOL CHARTER CORRESPONDANT ==============");
-            System.out.println("Aéroport : " + o[0].toString());
-            System.out.println("Pays : " + o[1].toString());
-            System.out.println("Date arrivée : " + o[2].toString());
-            System.out.println("Capacité libre : " + o[3].toString());
-            System.out.println("Prix : " + o[4].toString());
-            System.out.println("IdVol : " + o[5].toString());
-            System.out.println("========================================================");
-
-            volsChartersPourLesAssociation.add(
-                    new VolAssociation(
-                            o[5].toString(),
-                            o[0].toString(),
-                            o[1].toString(),
-                            Date.valueOf(o[2].toString()),
-                            Integer.parseInt(o[3].toString()),
-                            Integer.parseInt(o[4].toString().substring(0, o[4].toString().indexOf("."))),
-                            TypeVol.Charter
-                    )
-            );
-        }
+        getVols(TypeVol.Regulier,"2017-06-17","Guinee",10);
+        getVols(TypeVol.Charter,"2017-06-17","Guinee",10);
 
         em.getTransaction().commit();
         em.close();
         emf.close();
-
-        ObjectMapper mapper = new ObjectMapper();
-
-        //Object to JSON in String
-        String volsReguliersInJSON = mapper.writeValueAsString(volsReguliersPourLesAssociation);
-        String volsChartersJSON = mapper.writeValueAsString(volsChartersPourLesAssociation);
-
-        System.out.println("Réguliers : " + volsReguliersInJSON.toString());
-        System.out.println("Charters : " + volsChartersJSON.toString());
-
     }
 }

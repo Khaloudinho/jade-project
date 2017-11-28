@@ -1,7 +1,7 @@
 package agents;
 
-import behaviors.vols.RegisterAgentBehavior;
-import behaviors.vols.VolManagementBehavior;
+import behaviors.RegisterAgentBehavior;
+import behaviors.VolManagementBehavior;
 import containers.CompagnieContainer;
 import jade.core.AID;
 import jade.core.behaviours.ParallelBehaviour;
