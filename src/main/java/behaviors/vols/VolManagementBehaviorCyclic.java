@@ -3,15 +3,8 @@ package behaviors.vols;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import containers.CompagnieContainer;
-import jade.core.Agent;
-import jade.core.behaviours.DataStore;
-import jade.domain.FIPAAgentManagement.FailureException;
-import jade.domain.FIPAAgentManagement.NotUnderstoodException;
-import jade.domain.FIPAAgentManagement.RefuseException;
-import jade.gui.GuiEvent;
+import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
-import jade.lang.acl.MessageTemplate;
-import jade.proto.ContractNetResponder;
 import messages.association.DemandeVols;
 import messages.association.VolAssociation;
 import util.TypeVol;
@@ -24,38 +17,54 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VolManagementBehavior extends ContractNetResponder {
+public class VolManagementBehaviorCyclic extends CyclicBehaviour {
 
     private CompagnieContainer compagnieContainer;
 
-    public VolManagementBehavior(Agent a, MessageTemplate mt) {
-        super(a, mt);
-    }
-
-    public VolManagementBehavior(Agent a, MessageTemplate mt, DataStore store) {
-        super(a, mt, store);
-    }
-
-    public VolManagementBehavior(Agent a, MessageTemplate mt, CompagnieContainer compagnieContainer) {
-        super(a, mt);
+    public VolManagementBehaviorCyclic(CompagnieContainer compagnieContainer) {
         this.compagnieContainer = compagnieContainer;
     }
 
     //{"pays":"Guinee","date":"2017-06-17","volume":"10"}
     @Override
-    protected ACLMessage handleCfp(ACLMessage cfp) throws RefuseException, FailureException, NotUnderstoodException {
-        /*
-        //Recevoir le message d'Anne
-        GuiEvent guiEvent = new GuiEvent(this, 1);
-        guiEvent.addParameter(cfp.getContent());
+    public void action() {
+        ACLMessage aclMessage = myAgent.receive();
 
-        //On recupere le JSON
-        String message = compagnieContainer.viewMessage(guiEvent);
-        */
+        if (aclMessage != null) {
+            switch (aclMessage.getPerformative()) {
+                case ACLMessage.CFP:
+                    manageCFP(aclMessage);
+                    break;
+
+                case ACLMessage.ACCEPT_PROPOSAL:
+                    break;
+
+                default:
+                    break;
+            }
+        } else {
+            block();
+        }
+    }
+
+    private void manageCFP(ACLMessage aclMessage) {
+        ACLMessage response = aclMessage.createReply();
+
+        //GuiEvent guiEvent = new GuiEvent(this, 1);
+        //guiEvent.addParameter(aclMessage.getContent());
+        //gui.viewMessage(guiEvent);
+                    /*
+                        //Recevoir le message d'Anne
+                        GuiEvent guiEvent = new GuiEvent(this, 1);
+                        guiEvent.addParameter(cfp.getContent());
+
+                        //On recupere le JSON
+                        String message = compagnieContainer.viewMessage(guiEvent);
+                     */
 
         //PROVISOIRE POUR TESTER L'INTERACTION
         String message = "{\"pays\":\"Guinee\",\"date\":\"2017-01-01\",\"volume\":\"10\"}";
-        System.out.println("EN DUR "+message);
+        System.out.println("EN DUR " + message);
 
         //On construit un objet
         ObjectMapper mapper = new ObjectMapper();
@@ -88,7 +97,7 @@ public class VolManagementBehavior extends ContractNetResponder {
 
             ArrayList<VolAssociation> volsChartersPourLesAssociation = new ArrayList<>();
 
-            for (Object[] o : volsChartersCorrespondantsALaDemande){
+            for (Object[] o : volsChartersCorrespondantsALaDemande) {
                 System.out.println("============== VOL CHARTER CORRESPONDANT ==============");
                 System.out.println("Aéroport : " + o[0].toString());
                 System.out.println("Pays : " + o[1].toString());
@@ -120,37 +129,31 @@ public class VolManagementBehavior extends ContractNetResponder {
             }
 
             //Retourner une propositions au groupe des associations
-            ACLMessage messageAssociation = cfp.createReply();
+            ACLMessage messageAssociation = aclMessage.createReply();
             messageAssociation.setPerformative(ACLMessage.CFP);
             //ACLMessage messageAssociation = new ACLMessage(ACLMessage.PROPOSE);
             messageAssociation.setContent(messageAssociationContent);
             System.out.println("TEST MESSAGE :" + messageAssociation.getContent());
 
-            messageAssociation.addReceiver(cfp.getSender());
+            messageAssociation.addReceiver(aclMessage.getSender());
 
             //***Test***
-            ACLMessage aclMessage = new ACLMessage(ACLMessage.INFORM);
             String livre = messageAssociation.getContent();
-            aclMessage.setContent(livre);
-            System.out.println("SENDER : "+ cfp.getSender() +" " +cfp.getSender().getName() + " "+cfp.getSender().getLocalName());
-            aclMessage.addReceiver(cfp.getSender());
-            myAgent.send(aclMessage);
-            //***Test***
-
-            return super.prepareResponse(messageAssociation);
+            response.setContent(livre);
+            System.out.println("SENDER : " + response.getSender() + " " + response.getSender().getName() + " " + response.getSender().getLocalName());
+            response.addReceiver(response.getSender());
+            myAgent.send(response);
 
         } catch (Exception e) {
             System.out.println("Format de la demande invalide");
             String formatErrorMessageContent = "Erreur dans le format de la demande";
-            ACLMessage formatErrorMessage = cfp.createReply();
-            formatErrorMessage.setPerformative(ACLMessage.FAILURE);
-            formatErrorMessage.setContent(formatErrorMessageContent);
+            response.setPerformative(ACLMessage.FAILURE);
+            response.setContent(formatErrorMessageContent);
+            response.addReceiver(aclMessage.getSender());
 
-            System.out.println(cfp.getSender());
-            formatErrorMessage.addReceiver(cfp.getSender());
-
-            return formatErrorMessage;
         }
     }
-
 }
+
+
+

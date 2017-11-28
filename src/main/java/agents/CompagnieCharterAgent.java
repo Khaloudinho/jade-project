@@ -2,6 +2,7 @@ package agents;
 
 import behaviors.vols.RegisterAgentBehavior;
 import behaviors.vols.VolManagementBehavior;
+import behaviors.vols.VolManagementBehaviorCyclic;
 import containers.CompagnieContainer;
 import jade.core.AID;
 import jade.core.behaviours.CyclicBehaviour;
@@ -23,9 +24,9 @@ public class CompagnieCharterAgent extends GuiAgent implements Compagnie {
         System.out.println("Initialisation de l'agent "+this.getAID().getName());
 
         ParallelBehaviour parallelBehaviour = new ParallelBehaviour();
-        parallelBehaviour.addSubBehaviour(new RegisterAgentBehavior("Vols", "Vols-Association"));
-        //parallelBehaviour.addSubBehaviour(new VolManagementBehavior(compagnieContainer));
-        parallelBehaviour.addSubBehaviour(new VolManagementBehavior(this, null, compagnieContainer));
+        parallelBehaviour.addSubBehaviour(new RegisterAgentBehavior("compagnie", "Vols-Association"));
+        //parallelBehaviour.addSubBehaviour(new VolManagementBehavior(this, null, compagnieContainer));
+        parallelBehaviour.addSubBehaviour(new VolManagementBehaviorCyclic(compagnieContainer));
 
         /*MessageTemplate template = MessageTemplate.and(MessageTemplate.MatchProtocol("fipa-contract-net"), MessageTemplate.MatchPerformative(ACLMessage.CFP));
         parallelBehaviour.addSubBehaviour(new CyclicBehaviour() {

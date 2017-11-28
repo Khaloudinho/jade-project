@@ -19,3 +19,12 @@
 
 # Integrated Development Environment
 - IntelliJ IDEA 2017.2.6
+
+
+# Lancement des projets :
+
+## Lancer le mainContainer d'Anne
+mvn -Pjade-main exec:java
+
+## Lancer les agents de Anne
+mvn -Pjade-agent exec:java
