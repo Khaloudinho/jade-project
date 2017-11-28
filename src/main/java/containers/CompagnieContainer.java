@@ -1,6 +1,7 @@
 package containers;
 
 import agents.Compagnie;
+import agents.CompagnieAgent;
 import agents.CompagnieCharterAgent;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
@@ -77,4 +78,6 @@ public class CompagnieContainer extends Application {
         launch(CompagnieContainer.class);
     }
 
+    public void setCompagnieAgent(CompagnieAgent compagnieAgent) {
+    }
 }
