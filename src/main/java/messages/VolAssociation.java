@@ -1,5 +1,8 @@
 package messages;
 
+import util.TypeVol;
+
+import java.lang.reflect.Type;
 import java.sql.Date;
 
 public class VolAssociation {
@@ -16,13 +19,16 @@ public class VolAssociation {
 
     private int prix;
 
-    public VolAssociation(String idVol, String aeroport, String pays, Date dateArrivee, int capaciteLibre, int prix) {
+    private TypeVol typeVol;
+
+    public VolAssociation(String idVol, String aeroport, String pays, Date dateArrivee, int capaciteLibre, int prix, TypeVol typeVol) {
         this.idVol = idVol;
         this.aeroport = aeroport;
         this.pays = pays;
         this.dateArrivee = dateArrivee;
         this.capaciteLibre = capaciteLibre;
         this.prix = prix;
+        this.typeVol = typeVol;
     }
 
     public String getIdVol() {
@@ -71,5 +77,13 @@ public class VolAssociation {
 
     public void setPrix(int prix) {
         this.prix = prix;
+    }
+
+    public TypeVol getTypeVol() {
+        return typeVol;
+    }
+
+    public void setTypeVol(TypeVol typeVol) {
+        this.typeVol = typeVol;
     }
 }

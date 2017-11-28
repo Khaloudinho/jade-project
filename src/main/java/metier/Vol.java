@@ -20,8 +20,7 @@ import java.sql.Date;
 
         @NamedQuery(
                 name = "Vol.calculerLesPrixDesVols",
-                query = "SELECT v.id, v.avion.consommationCarburant, v.aeroportArrivee.heuresVolDepuisParis, v.aeroportArrivee.taxeAeroport, " +
-                        "v.aeroportArrivee.lieu.ville FROM Vol v ")
+                query = "SELECT v.id, v.avion.consommationCarburant, v.aeroportArrivee.heuresVolDepuisParis, v.aeroportArrivee.taxeAeroport, v.aeroportArrivee.lieu.ville FROM Vol v ")
 })
 
 public class Vol implements Serializable {
