@@ -21,6 +21,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.security.acl.Acl;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
@@ -97,7 +98,8 @@ public class VolManagementBehavior extends ContractNetResponder {
 
                 volsChartersPourLesAssociation.add(
                         new VolAssociation(o[5].toString(), o[0].toString(), o[1].toString(), Date.valueOf(o[2].toString()),
-                                Integer.parseInt(o[3].toString()), Integer.parseInt(o[4].toString().substring(0, o[4].toString().indexOf(".")))
+                                Integer.parseInt(o[3].toString()), Integer.parseInt(o[4].toString().substring(0, o[4].toString().indexOf("."))),
+                                TypeVol.Charter
                         )
                 );
             }

@@ -1,6 +1,6 @@
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import messages.VolAssociation;
+import messages.association.VolAssociation;
 import metier.*;
 import util.TypeVol;
 
@@ -161,7 +161,7 @@ public class Seeder {
 
         System.out.println("Requête : Vol.getVolsReguliersCorrespondantsALaDemande");
         Query queryVolsReguliersCorrespondantsALaDemande = em.createNamedQuery("Vol.getVolsCorrespondantsALaDemande", Object[].class);
-        queryVolsReguliersCorrespondantsALaDemande.setParameter("date", Date.valueOf("2017-01-01"));
+        queryVolsReguliersCorrespondantsALaDemande.setParameter("date", Date.valueOf("2017-06-17"));
         queryVolsReguliersCorrespondantsALaDemande.setParameter("pays", "Guinee");
         queryVolsReguliersCorrespondantsALaDemande.setParameter("capaciteLibre", 10);
         queryVolsReguliersCorrespondantsALaDemande.setParameter("typeVol", TypeVol.Regulier);
@@ -193,7 +193,7 @@ public class Seeder {
 
         System.out.println("Requête : Vol.getVolsChartersCorrespondantsALaDemande");
         Query queryVolsChartersCorrespondantsALaDemande = em.createNamedQuery("Vol.getVolsCorrespondantsALaDemande", Object[].class);
-        queryVolsChartersCorrespondantsALaDemande.setParameter("date", Date.valueOf("2017-01-01"));
+        queryVolsChartersCorrespondantsALaDemande.setParameter("date", Date.valueOf("2017-05-16"));
         queryVolsChartersCorrespondantsALaDemande.setParameter("pays", "Guinee");
         queryVolsChartersCorrespondantsALaDemande.setParameter("capaciteLibre", 10);
         queryVolsChartersCorrespondantsALaDemande.setParameter("typeVol", TypeVol.Charter);
