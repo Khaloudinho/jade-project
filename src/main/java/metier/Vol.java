@@ -13,7 +13,7 @@ import java.sql.Date;
                 name = "Vol.getVolsCorrespondantsALaDemande",
                 query = "SELECT v.aeroportArrivee.nomAeroport, v.aeroportArrivee.lieu.pays, v.dateArrivee, v.avion.capaciteLibre, v.prixVol, v.idVol " +
                         "FROM Vol v " +
-                        "WHERE v.dateDepart = :date " +
+                        "WHERE v.dateArrivee = :date " +
                         "AND v.aeroportArrivee.lieu.pays = :pays " +
                         "AND v.avion.capaciteLibre >= :capaciteLibre " +
                         "AND v.typeVol = :typeVol "),
