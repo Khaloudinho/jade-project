@@ -2,7 +2,6 @@ package metier;
 
 import org.hibernate.annotations.GenericGenerator;
 import util.TypeVol;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Date;
