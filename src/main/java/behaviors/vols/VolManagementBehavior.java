@@ -106,38 +106,9 @@ public class VolManagementBehavior extends ContractNetResponder {
             em.close();
             emf.close();
 
-            //1 On renvoie tous les vols ==> degeulasse
-            //ArrayList<VolAssociation> volsPourLesAssociation = new ArrayList<>();
-
-            //for (Object[] o : volsCorrespondantsALaDemande){
-            //   System.out.println("============== VOL CORRESPONDANT ==============");
-            //   System.out.println("Aéroport : " + o[0].toString());
-            //   System.out.println("Pays : " + o[1].toString());
-            //   System.out.println("Date départ : " + o[2].toString());
-            //   System.out.println("Capacité libre : " + o[3].toString());
-            //   System.out.println("Prix : " + o[4].toString());
-            //   System.out.println("IdVol : " + o[5].toString());
-            //   System.out.println("===============================================");
-
-            //   //final String OLD_FORMAT = "dd-MM-yyyy";
-            //   final String OLD_FORMAT = "yyyy-MM-dd";
-            //   SimpleDateFormat sdf = new SimpleDateFormat(OLD_FORMAT);
-            //   Date dateVol = null;
-            //   try {
-            //       System.out.println(" DATE VOL " + o[2].toString());
-            //       String test = o[2].toString();
-            //       dateVol = Date.valueOf(test);
-            //   } catch (Exception e) {
-            //       e.printStackTrace();
-            //   }
-
-            //   volsPourLesAssociation.add(new VolAssociation(o[5].toString(), o[0].toString(), o[1].toString(), dateVol, Integer.parseInt(o[3].toString()), Integer.parseInt(o[4].toString().substring(0, o[4].toString().indexOf(".")))));
-
-            //}
 
             String messageAssociationContent = "";
             try {
-            //    messageAssociationContent = mapper.writeValueAsString(volsPourLesAssociation);
                 messageAssociationContent = mapper.writeValueAsString(volsChartersCorrespondantsALaDemande);
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
