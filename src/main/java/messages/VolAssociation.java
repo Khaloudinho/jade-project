@@ -1,4 +1,4 @@
-package messages.association;
+package messages;
 
 import util.TypeVol;
 

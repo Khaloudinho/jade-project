@@ -1,4 +1,4 @@
-package behaviors.vols;
+package behaviors;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,8 +12,8 @@ import jade.gui.GuiEvent;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.proto.ContractNetResponder;
-import messages.association.DemandeVols;
-import messages.association.VolAssociation;
+import messages.DemandeVols;
+import messages.VolAssociation;
 import util.TypeVol;
 
 import javax.persistence.EntityManager;

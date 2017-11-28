@@ -1,4 +1,4 @@
-package behaviors.vols;
+package behaviors;
 
 import jade.core.Agent;
 import jade.core.behaviours.OneShotBehaviour;
