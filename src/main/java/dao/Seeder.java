@@ -1,7 +1,8 @@
+package dao;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import messages.association.DemandeVols;
-import messages.association.VolAssociation;
+import messages.VolAssociation;
 import metier.*;
 import util.TypeVol;
 
@@ -9,11 +10,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaBuilder;
-import java.lang.reflect.Type;
 import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.util.*;
+
+;
 
 
 public class Seeder {
@@ -152,7 +152,10 @@ public class Seeder {
 
         for (Object[] o : paramPourCalculerLesPrixDesVols) {
             String idVol = o[0].toString();
-            int prix = Integer.valueOf(o[1].toString()) * Integer.valueOf(o[2].toString()) * prixKeroseneParHeure + Integer.valueOf(o[3].toString());
+            int consommationCarburant = Integer.valueOf(o[1].toString());
+            int heuresVolDepuisParis = Integer.valueOf(o[2].toString());
+            int taxeAeroport = Integer.valueOf(o[3].toString());
+            int prix = consommationCarburant * heuresVolDepuisParis * prixKeroseneParHeure + taxeAeroport;
             tousLesPrix.put(idVol, prix);
         }
 
@@ -162,7 +165,7 @@ public class Seeder {
 
         System.out.println("Requête : Vol.getVolsReguliersCorrespondantsALaDemande");
         Query queryVolsReguliersCorrespondantsALaDemande = em.createNamedQuery("Vol.getVolsCorrespondantsALaDemande", Object[].class);
-        queryVolsReguliersCorrespondantsALaDemande.setParameter("date", Date.valueOf("2017-01-01"));
+        queryVolsReguliersCorrespondantsALaDemande.setParameter("date", Date.valueOf("2017-06-17"));
         queryVolsReguliersCorrespondantsALaDemande.setParameter("pays", "Guinee");
         queryVolsReguliersCorrespondantsALaDemande.setParameter("capaciteLibre", 10);
         queryVolsReguliersCorrespondantsALaDemande.setParameter("typeVol", TypeVol.Regulier);
@@ -182,15 +185,19 @@ public class Seeder {
             System.out.println("========================================================");
 
             volsReguliersPourLesAssociation.add(
-                    new VolAssociation(o[5].toString(), o[0].toString(), o[1].toString(), Date.valueOf(o[2].toString()),
-                            Integer.parseInt(o[3].toString()), Integer.parseInt(o[4].toString().substring(0, o[4].toString().indexOf(".")))
+                    new VolAssociation(o[5].toString(),
+                            o[0].toString(), o[1].toString(),
+                            Date.valueOf(o[2].toString()),
+                            Integer.parseInt(o[3].toString()),
+                            Integer.parseInt(o[4].toString().substring(0, o[4].toString().indexOf("."))),
+                            TypeVol.Regulier
                     )
             );
         }
 
         System.out.println("Requête : Vol.getVolsChartersCorrespondantsALaDemande");
         Query queryVolsChartersCorrespondantsALaDemande = em.createNamedQuery("Vol.getVolsCorrespondantsALaDemande", Object[].class);
-        queryVolsChartersCorrespondantsALaDemande.setParameter("date", Date.valueOf("2017-01-01"));
+        queryVolsChartersCorrespondantsALaDemande.setParameter("date", Date.valueOf("2017-05-16"));
         queryVolsChartersCorrespondantsALaDemande.setParameter("pays", "Guinee");
         queryVolsChartersCorrespondantsALaDemande.setParameter("capaciteLibre", 10);
         queryVolsChartersCorrespondantsALaDemande.setParameter("typeVol", TypeVol.Charter);
@@ -210,8 +217,14 @@ public class Seeder {
             System.out.println("========================================================");
 
             volsChartersPourLesAssociation.add(
-                    new VolAssociation(o[5].toString(), o[0].toString(), o[1].toString(), Date.valueOf(o[2].toString()),
-                            Integer.parseInt(o[3].toString()), Integer.parseInt(o[4].toString().substring(0, o[4].toString().indexOf(".")))
+                    new VolAssociation(
+                            o[5].toString(),
+                            o[0].toString(),
+                            o[1].toString(),
+                            Date.valueOf(o[2].toString()),
+                            Integer.parseInt(o[3].toString()),
+                            Integer.parseInt(o[4].toString().substring(0, o[4].toString().indexOf("."))),
+                            TypeVol.Charter
                     )
             );
         }
@@ -223,18 +236,11 @@ public class Seeder {
         ObjectMapper mapper = new ObjectMapper();
 
         //Object to JSON in String
-        String volsReguliersInJSON = mapper.writeValueAsString(volsReguliersCorrespondantsALaDemande);
-        String volsChartersJSON = mapper.writeValueAsString(volsChartersCorrespondantsALaDemande);
+        String volsReguliersInJSON = mapper.writeValueAsString(volsReguliersPourLesAssociation);
+        String volsChartersJSON = mapper.writeValueAsString(volsChartersPourLesAssociation);
 
         System.out.println("Réguliers : " + volsReguliersInJSON.toString());
         System.out.println("Charters : " + volsChartersJSON.toString());
-
-        DemandeVols demandeVols = new DemandeVols("RDC", new Date(2017,11, 11), 30);
-
-        //Object to JSON in String
-        String jsonInString2 = mapper.writeValueAsString(demandeVols);
-
-        System.out.println(jsonInString2.toString());
 
     }
 }

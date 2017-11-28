@@ -1,8 +1,9 @@
-package messages.association;
+package messages;
 
 import java.sql.Date;
 
 public class DemandeVols {
+
     private String pays;
     private Date date;
     private Integer volume;

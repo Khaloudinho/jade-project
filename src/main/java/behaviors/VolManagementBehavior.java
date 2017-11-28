@@ -1,4 +1,4 @@
-package behaviors.vols;
+package behaviors;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,18 +12,15 @@ import jade.gui.GuiEvent;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.proto.ContractNetResponder;
-import messages.association.DemandeVols;
-import messages.association.VolAssociation;
+import messages.DemandeVols;
+import messages.VolAssociation;
 import util.TypeVol;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
-import java.io.IOException;
-import java.security.acl.Acl;
 import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,7 +94,9 @@ public class VolManagementBehavior extends ContractNetResponder {
 
                 volsChartersPourLesAssociation.add(
                         new VolAssociation(o[5].toString(), o[0].toString(), o[1].toString(), Date.valueOf(o[2].toString()),
-                                Integer.parseInt(o[3].toString()), Integer.parseInt(o[4].toString().substring(0, o[4].toString().indexOf(".")))
+                                Integer.parseInt(o[3].toString()),
+                                Integer.parseInt(o[4].toString().substring(0, o[4].toString().indexOf("."))),
+                                TypeVol.Charter
                         )
                 );
             }
