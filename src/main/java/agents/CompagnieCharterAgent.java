@@ -1,45 +1,33 @@
 package agents;
 
-import behaviors.vols.RegisterAgentBehavior;
-import behaviors.vols.VolManagementBehavior;
+import behaviors.RegisterAgentBehavior;
+import behaviors.VolManagementBehavior;
 import behaviors.vols.VolManagementBehaviorCyclic;
+import behaviors.RegisterAgentBehavior;
+import behaviors.VolManagementBehavior;
 import containers.CompagnieContainer;
 import jade.core.AID;
-import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.ParallelBehaviour;
 import jade.gui.GuiAgent;
 import jade.gui.GuiEvent;
 import jade.lang.acl.ACLMessage;
-import jade.lang.acl.MessageTemplate;
 import jade.wrapper.ControllerException;
 
 public class CompagnieCharterAgent extends GuiAgent implements Compagnie {
+
     private CompagnieContainer compagnieContainer;
 
 
     @Override
     protected void setup(){
         compagnieContainer= (CompagnieContainer) getArguments()[0];
-        compagnieContainer.setCompagnieAgent(this);
+        compagnieContainer.setCompagnieCharterAgent(this);
         System.out.println("Initialisation de l'agent "+this.getAID().getName());
 
         ParallelBehaviour parallelBehaviour = new ParallelBehaviour();
         parallelBehaviour.addSubBehaviour(new RegisterAgentBehavior("compagnie", "Vols-Association"));
         //parallelBehaviour.addSubBehaviour(new VolManagementBehavior(this, null, compagnieContainer));
         parallelBehaviour.addSubBehaviour(new VolManagementBehaviorCyclic(compagnieContainer));
-
-        /*MessageTemplate template = MessageTemplate.and(MessageTemplate.MatchProtocol("fipa-contract-net"), MessageTemplate.MatchPerformative(ACLMessage.CFP));
-        parallelBehaviour.addSubBehaviour(new CyclicBehaviour() {
-                    @Override
-                    public void action() {
-                        ACLMessage cfq = myAgent.receive(template);
-                        if(cfq!=null){
-                            myAgent.addBehaviour(new VolManagementBehavior(myAgent, template, compagnieContainer));
-                        }else {
-                            block();
-                        }
-                    }
-                });*/
 
         addBehaviour(parallelBehaviour);
 

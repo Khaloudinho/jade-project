@@ -3,19 +3,14 @@ package behaviors.vols;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import containers.CompagnieContainer;
+import dao.Seeder;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
-import messages.association.DemandeVols;
-import messages.association.VolAssociation;
+import messages.DemandeVols;
+import messages.VolAssociation;
 import util.TypeVol;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.Query;
-import java.sql.Date;
 import java.util.ArrayList;
-import java.util.List;
 
 public class VolManagementBehaviorCyclic extends CyclicBehaviour {
 
@@ -63,7 +58,7 @@ public class VolManagementBehaviorCyclic extends CyclicBehaviour {
                      */
 
         //PROVISOIRE POUR TESTER L'INTERACTION
-        String message = "{\"pays\":\"Guinee\",\"date\":\"2017-01-01\",\"volume\":\"10\"}";
+        String message = "{\"pays\":\"Guinee\",\"date\":\"2017-05-16\",\"volume\":\"10\"}";
         System.out.println("EN DUR " + message);
 
         //On construit un objet
@@ -79,51 +74,16 @@ public class VolManagementBehaviorCyclic extends CyclicBehaviour {
 
             //On utilise cet objet (ses attributs/) pour effectuer la requete / cet objet n'est pas persiste
 
-            //FIX ME refractor with a design pattern
-            EntityManagerFactory emf = Persistence.createEntityManagerFactory("jadeprojectPU");
-            EntityManager em = emf.createEntityManager();
-            em.getTransaction().begin();
-
             //FIX ME use entity manager
             System.out.println("Requête : Vol.getVolsChartersCorrespondantsALaDemande");
 
-            Query queryVolsChartersCorrespondantsALaDemande = em.createNamedQuery("Vol.getVolsCorrespondantsALaDemande", Object[].class);
-            queryVolsChartersCorrespondantsALaDemande.setParameter("date", demandeVols.getDate());
-            queryVolsChartersCorrespondantsALaDemande.setParameter("pays", demandeVols.getPays());
-            queryVolsChartersCorrespondantsALaDemande.setParameter("capaciteLibre", demandeVols.getVolume());
-            queryVolsChartersCorrespondantsALaDemande.setParameter("typeVol", TypeVol.Charter);
-
-            List<Object[]> volsChartersCorrespondantsALaDemande = queryVolsChartersCorrespondantsALaDemande.getResultList();
-
-            ArrayList<VolAssociation> volsChartersPourLesAssociation = new ArrayList<>();
-
-            for (Object[] o : volsChartersCorrespondantsALaDemande) {
-                System.out.println("============== VOL CHARTER CORRESPONDANT ==============");
-                System.out.println("Aéroport : " + o[0].toString());
-                System.out.println("Pays : " + o[1].toString());
-                System.out.println("Date arrivée : " + o[2].toString());
-                System.out.println("Capacité libre : " + o[3].toString());
-                System.out.println("Prix : " + o[4].toString());
-                System.out.println("IdVol : " + o[5].toString());
-                System.out.println("========================================================");
-
-                volsChartersPourLesAssociation.add(
-                        new VolAssociation(o[5].toString(), o[0].toString(), o[1].toString(), Date.valueOf(o[2].toString()),
-                                Integer.parseInt(o[3].toString()),
-                                Integer.parseInt(o[4].toString().substring(0, o[4].toString().indexOf("."))),
-                                TypeVol.Charter
-                        )
-                );
-            }
-
-            em.getTransaction().commit();
-            em.close();
-            emf.close();
-
+            System.out.println("TO STRING " + demandeVols.toString());
+            ArrayList<VolAssociation> volsChartersPourLesAssociation = Seeder.getVols(TypeVol.Charter, demandeVols.getDate().toString(), demandeVols.getPays(), demandeVols.getVolume());
+            System.out.println("TEST RESULTAT "+ volsChartersPourLesAssociation.size());
 
             String messageAssociationContent = "";
             try {
-                messageAssociationContent = mapper.writeValueAsString(volsChartersCorrespondantsALaDemande);
+                messageAssociationContent = mapper.writeValueAsString(volsChartersPourLesAssociation);
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
@@ -140,17 +100,18 @@ public class VolManagementBehaviorCyclic extends CyclicBehaviour {
             //***Test***
             String livre = messageAssociation.getContent();
             response.setContent(livre);
-            System.out.println("SENDER : " + response.getSender() + " " + response.getSender().getName() + " " + response.getSender().getLocalName());
-            response.addReceiver(response.getSender());
+            System.out.println("SENDER : " + aclMessage.getSender() + " " + aclMessage.getSender().getName() + " " + aclMessage.getSender().getLocalName());
+            response.addReceiver(aclMessage.getSender());
             myAgent.send(response);
 
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("Format de la demande invalide");
             String formatErrorMessageContent = "Erreur dans le format de la demande";
             response.setPerformative(ACLMessage.FAILURE);
             response.setContent(formatErrorMessageContent);
             response.addReceiver(aclMessage.getSender());
-
+            myAgent.send(response);
         }
     }
 }

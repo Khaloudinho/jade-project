@@ -1,6 +1,5 @@
-package behaviors.vols;
+package behaviors;
 
-import jade.core.Agent;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
@@ -22,7 +21,7 @@ public class RegisterAgentBehavior extends OneShotBehaviour{
     @Override
     public void action() {
         System.out.println("*************************************************");
-        DFAgentDescription dfa=new DFAgentDescription();
+        DFAgentDescription dfa = new DFAgentDescription();
         dfa.setName(super.myAgent.getAID());
         ServiceDescription sd = new ServiceDescription();
         sd.setType(serviceType);

@@ -1,28 +1,25 @@
-package behaviors.vols;
+package behaviors;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import containers.CompagnieContainer;
+import dao.Seeder;
 import jade.core.Agent;
 import jade.core.behaviours.DataStore;
 import jade.domain.FIPAAgentManagement.FailureException;
 import jade.domain.FIPAAgentManagement.NotUnderstoodException;
 import jade.domain.FIPAAgentManagement.RefuseException;
-import jade.gui.GuiEvent;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.proto.ContractNetResponder;
-import messages.association.DemandeVols;
-import messages.association.VolAssociation;
+import messages.DemandeVols;
+import messages.VolAssociation;
 import util.TypeVol;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import javax.persistence.Query;
-import java.sql.Date;
 import java.util.ArrayList;
-import java.util.List;
 
 public class VolManagementBehavior extends ContractNetResponder {
 
@@ -60,17 +57,16 @@ public class VolManagementBehavior extends ContractNetResponder {
         //On construit un objet
         ObjectMapper mapper = new ObjectMapper();
 
-        DemandeVols demandeVols = null;
+        DemandeVols demandeVols;
         //JSON from String to Object
+
         try {
-            //FIX ME static mapper
+            // FIX ME static mapper
             demandeVols = mapper.readValue(message, DemandeVols.class);
             System.out.println(message.toString());
             System.out.println(demandeVols.toString());
 
-            //On utilise cet objet (ses attributs/) pour effectuer la requete / cet objet n'est pas persiste
-
-            //FIX ME refractor with a design pattern
+            // FIX ME refractor with a design pattern
             EntityManagerFactory emf = Persistence.createEntityManagerFactory("jadeprojectPU");
             EntityManager em = emf.createEntityManager();
             em.getTransaction().begin();
@@ -78,39 +74,7 @@ public class VolManagementBehavior extends ContractNetResponder {
             //FIX ME use entity manager
             System.out.println("Requête : Vol.getVolsChartersCorrespondantsALaDemande");
 
-            Query queryVolsChartersCorrespondantsALaDemande = em.createNamedQuery("Vol.getVolsCorrespondantsALaDemande", Object[].class);
-            queryVolsChartersCorrespondantsALaDemande.setParameter("date", demandeVols.getDate());
-            queryVolsChartersCorrespondantsALaDemande.setParameter("pays", demandeVols.getPays());
-            queryVolsChartersCorrespondantsALaDemande.setParameter("capaciteLibre", demandeVols.getVolume());
-            queryVolsChartersCorrespondantsALaDemande.setParameter("typeVol", TypeVol.Charter);
-
-            List<Object[]> volsChartersCorrespondantsALaDemande = queryVolsChartersCorrespondantsALaDemande.getResultList();
-
-            ArrayList<VolAssociation> volsChartersPourLesAssociation = new ArrayList<>();
-
-            for (Object[] o : volsChartersCorrespondantsALaDemande){
-                System.out.println("============== VOL CHARTER CORRESPONDANT ==============");
-                System.out.println("Aéroport : " + o[0].toString());
-                System.out.println("Pays : " + o[1].toString());
-                System.out.println("Date arrivée : " + o[2].toString());
-                System.out.println("Capacité libre : " + o[3].toString());
-                System.out.println("Prix : " + o[4].toString());
-                System.out.println("IdVol : " + o[5].toString());
-                System.out.println("========================================================");
-
-                volsChartersPourLesAssociation.add(
-                        new VolAssociation(o[5].toString(), o[0].toString(), o[1].toString(), Date.valueOf(o[2].toString()),
-                                Integer.parseInt(o[3].toString()),
-                                Integer.parseInt(o[4].toString().substring(0, o[4].toString().indexOf("."))),
-                                TypeVol.Charter
-                        )
-                );
-            }
-
-            em.getTransaction().commit();
-            em.close();
-            emf.close();
-
+            ArrayList<VolAssociation> volsChartersCorrespondantsALaDemande = Seeder.getVols(TypeVol.Charter, String.valueOf(demandeVols.getDate()), demandeVols.getPays(), demandeVols.getVolume());
 
             String messageAssociationContent = "";
             try {
@@ -124,20 +88,20 @@ public class VolManagementBehavior extends ContractNetResponder {
             messageAssociation.setPerformative(ACLMessage.CFP);
             //ACLMessage messageAssociation = new ACLMessage(ACLMessage.PROPOSE);
             messageAssociation.setContent(messageAssociationContent);
-            System.out.println("TEST MESSAGE :" + messageAssociation.getContent());
+            System.out.println("=========> Test Message : " + messageAssociation.getContent());
 
             messageAssociation.addReceiver(cfp.getSender());
 
-            //***Test***
-            ACLMessage aclMessage = new ACLMessage(ACLMessage.INFORM);
+            return messageAssociation;
+
+            /*ACLMessage aclMessage = new ACLMessage(ACLMessage.INFORM);
             String livre = messageAssociation.getContent();
             aclMessage.setContent(livre);
             System.out.println("SENDER : "+ cfp.getSender() +" " +cfp.getSender().getName() + " "+cfp.getSender().getLocalName());
             aclMessage.addReceiver(cfp.getSender());
             myAgent.send(aclMessage);
-            //***Test***
 
-            return super.prepareResponse(messageAssociation);
+            return super.prepareResponse(messageAssociation);*/
 
         } catch (Exception e) {
             System.out.println("Format de la demande invalide");
