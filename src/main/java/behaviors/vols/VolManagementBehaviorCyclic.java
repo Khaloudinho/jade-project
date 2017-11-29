@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import containers.CompagnieContainer;
 import dao.Seeder;
 import jade.core.behaviours.CyclicBehaviour;
+import jade.gui.GuiEvent;
 import jade.lang.acl.ACLMessage;
 import messages.DemandeVols;
 import messages.VolAssociation;
@@ -20,7 +21,7 @@ public class VolManagementBehaviorCyclic extends CyclicBehaviour {
         this.compagnieContainer = compagnieContainer;
     }
 
-    //{"pays":"Guinee","date":"2017-06-17","volume":"10"}
+    //{"pays":"Guinee","date":"2017-05-16","volume":"10"}
     @Override
     public void action() {
         ACLMessage aclMessage = myAgent.receive();
@@ -43,23 +44,17 @@ public class VolManagementBehaviorCyclic extends CyclicBehaviour {
     }
 
     private void manageCFP(ACLMessage aclMessage) {
+
         ACLMessage response = aclMessage.createReply();
 
-        //GuiEvent guiEvent = new GuiEvent(this, 1);
-        //guiEvent.addParameter(aclMessage.getContent());
-        //gui.viewMessage(guiEvent);
-                    /*
-                        //Recevoir le message d'Anne
-                        GuiEvent guiEvent = new GuiEvent(this, 1);
-                        guiEvent.addParameter(cfp.getContent());
-
-                        //On recupere le JSON
-                        String message = compagnieContainer.viewMessage(guiEvent);
-                     */
+        //Recevoir le message d'Anne
+        //On recupere le JSON
+        String message = aclMessage.getContent();
+        System.out.println(message);
 
         //PROVISOIRE POUR TESTER L'INTERACTION
-        String message = "{\"pays\":\"Guinee\",\"date\":\"2017-05-16\",\"volume\":\"10\"}";
-        System.out.println("EN DUR " + message);
+        //String message = "{\"pays\":\"Guinee\",\"date\":\"2017-05-16\",\"volume\":\"10\"}";
+        //System.out.println("EN DUR " + message);
 
         //On construit un objet
         ObjectMapper mapper = new ObjectMapper();
@@ -67,19 +62,14 @@ public class VolManagementBehaviorCyclic extends CyclicBehaviour {
         DemandeVols demandeVols = null;
         //JSON from String to Object
         try {
-            //FIX ME static mapper
             demandeVols = mapper.readValue(message, DemandeVols.class);
             System.out.println(message.toString());
             System.out.println(demandeVols.toString());
 
-            //On utilise cet objet (ses attributs/) pour effectuer la requete / cet objet n'est pas persiste
-
-            //FIX ME use entity manager
-            System.out.println("Requête : Vol.getVolsChartersCorrespondantsALaDemande");
-
             System.out.println("TO STRING " + demandeVols.toString());
             ArrayList<VolAssociation> volsChartersPourLesAssociation = Seeder.getVols(TypeVol.Charter, demandeVols.getDate().toString(), demandeVols.getPays(), demandeVols.getVolume());
-            System.out.println("TEST RESULTAT "+ volsChartersPourLesAssociation.size());
+            int tailleListeVols = volsChartersPourLesAssociation.size();
+            System.out.println("TAILLE LISTE VOLS : "+ tailleListeVols);
 
             String messageAssociationContent = "";
             try {
@@ -89,28 +79,22 @@ public class VolManagementBehaviorCyclic extends CyclicBehaviour {
             }
 
             //Retourner une propositions au groupe des associations
-            ACLMessage messageAssociation = aclMessage.createReply();
-            messageAssociation.setPerformative(ACLMessage.CFP);
-            //ACLMessage messageAssociation = new ACLMessage(ACLMessage.PROPOSE);
-            messageAssociation.setContent(messageAssociationContent);
-            System.out.println("TEST MESSAGE :" + messageAssociation.getContent());
+            if(tailleListeVols>0) {
+                ACLMessage messageAssociation = aclMessage.createReply();
+                messageAssociation.setPerformative(ACLMessage.PROPOSE);
+                messageAssociation.setContent(messageAssociationContent);
 
-            messageAssociation.addReceiver(aclMessage.getSender());
-
-            //***Test***
-            String livre = messageAssociation.getContent();
-            response.setContent(livre);
-            System.out.println("SENDER : " + aclMessage.getSender() + " " + aclMessage.getSender().getName() + " " + aclMessage.getSender().getLocalName());
-            response.addReceiver(aclMessage.getSender());
-            myAgent.send(response);
-
+                //messageAssociation.addReceiver(aclMessage.getSender());
+                System.out.println("Liste de vols envoyee aux associations");
+                myAgent.send(response);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Format de la demande invalide");
             String formatErrorMessageContent = "Erreur dans le format de la demande";
             response.setPerformative(ACLMessage.FAILURE);
             response.setContent(formatErrorMessageContent);
-            response.addReceiver(aclMessage.getSender());
+            //response.addReceiver(aclMessage.getSender());
             myAgent.send(response);
         }
     }

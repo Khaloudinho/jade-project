@@ -31,7 +31,7 @@ public class Seeder {
 
         //Object to JSON in String
         String volsReguliersInJSON = mapper.writeValueAsString(volsPourLesAssociation);
-        System.out.println("Réguliers : " + volsReguliersInJSON);
+        System.out.println("vols : " + volsReguliersInJSON);
 
         return volsPourLesAssociation;
     }
