@@ -46,7 +46,8 @@ public class Seeder {
         java.util.Date dateVol = new SimpleDateFormat(associationDatePattern).parse(date);
         //
         //queryVolsReguliersCorrespondantsALaDemande.setParameter("date", Date.valueOf(date));
-        queryVolsReguliersCorrespondantsALaDemande.setParameter("date", new Date(dateVol.getYear(), dateVol.getMonth(),dateVol.getDay()));
+        System.out.println("DATE : "+dateVol.toString());
+        queryVolsReguliersCorrespondantsALaDemande.setParameter("date", new Date(dateVol.getTime()));
         queryVolsReguliersCorrespondantsALaDemande.setParameter("pays", pays);
         queryVolsReguliersCorrespondantsALaDemande.setParameter("capaciteLibre", capaciteLibre);
         queryVolsReguliersCorrespondantsALaDemande.setParameter("typeVol", typeVol);

@@ -1,5 +1,7 @@
 package behaviors;
 
+//{"volume":0,"date":"Nov 30, 2017 10:33:51 AM","pays":"Guinee"}
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import containers.CompagnieContainer;
