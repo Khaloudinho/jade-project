@@ -11,6 +11,9 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 import java.sql.Date;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Seeder {
@@ -19,7 +22,8 @@ public class Seeder {
     private static EntityManager em = emf.createEntityManager();
     private static ObjectMapper mapper = new ObjectMapper();
 
-    public static ArrayList<VolAssociation> getVols(TypeVol typeVol, String date, String pays, int capaciteLibre) throws JsonProcessingException {
+
+    public static ArrayList<VolAssociation> getVols(TypeVol typeVol, String date, String pays, int capaciteLibre) throws JsonProcessingException, ParseException {
 
         String query = "Vol.getVolsCorrespondantsALaDemande";
         ArrayList<VolAssociation> volsPourLesAssociation;
@@ -36,9 +40,13 @@ public class Seeder {
         return volsPourLesAssociation;
     }
 
-    public static List<Object[]> daoGetvols(TypeVol typeVol, String query, String date, String pays, int capaciteLibre){
+    public static List<Object[]> daoGetvols(TypeVol typeVol, String query, String date, String pays, int capaciteLibre) throws ParseException {
         Query queryVolsReguliersCorrespondantsALaDemande = em.createNamedQuery(query, Object[].class);
-        queryVolsReguliersCorrespondantsALaDemande.setParameter("date", Date.valueOf(date));
+        String associationDatePattern = "MMM dd, yyyy HH:mm:ss a";
+        java.util.Date dateVol = new SimpleDateFormat(associationDatePattern).parse(date);
+        //
+        //queryVolsReguliersCorrespondantsALaDemande.setParameter("date", Date.valueOf(date));
+        queryVolsReguliersCorrespondantsALaDemande.setParameter("date", new Date(dateVol.getYear(), dateVol.getMonth(),dateVol.getDay()));
         queryVolsReguliersCorrespondantsALaDemande.setParameter("pays", pays);
         queryVolsReguliersCorrespondantsALaDemande.setParameter("capaciteLibre", capaciteLibre);
         queryVolsReguliersCorrespondantsALaDemande.setParameter("typeVol", typeVol);

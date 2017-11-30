@@ -88,6 +88,7 @@ public class VolManagementBehavior extends ContractNetResponder {
         } catch (Exception e) {
             System.out.println("Format de la demande invalide");
             String formatErrorMessageContent = "Erreur dans le format de la demande";
+            e.printStackTrace();
             ACLMessage formatErrorMessage = cfp.createReply();
             formatErrorMessage.setPerformative(ACLMessage.FAILURE);
             formatErrorMessage.setContent(formatErrorMessageContent);

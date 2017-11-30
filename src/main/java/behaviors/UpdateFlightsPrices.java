@@ -14,7 +14,7 @@ public class UpdateFlightsPrices extends TickerBehaviour {
     @Override
     protected void onTick() {
         //On va regarder la liste des vols charters
-        Seeder.getVols(TypeVol.Charter, )
+        //Seeder.getVols(TypeVol.Charter, )
 
         //On va regarder la date courante
         //On regarde la date de depart

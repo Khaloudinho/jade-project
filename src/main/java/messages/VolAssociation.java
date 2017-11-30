@@ -2,7 +2,6 @@ package messages;
 
 import util.TypeVol;
 
-import java.lang.reflect.Type;
 import java.sql.Date;
 
 public class VolAssociation {
@@ -25,6 +24,7 @@ public class VolAssociation {
         this.idVol = idVol;
         this.aeroport = aeroport;
         this.pays = pays;
+        //this.dateArrivee = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(dateArrivee.toz);
         this.dateArrivee = dateArrivee;
         this.capaciteLibre = capaciteLibre;
         this.prix = prix;
