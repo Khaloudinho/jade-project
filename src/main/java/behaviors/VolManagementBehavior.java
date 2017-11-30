@@ -11,7 +11,6 @@ import jade.core.behaviours.DataStore;
 import jade.domain.FIPAAgentManagement.FailureException;
 import jade.domain.FIPAAgentManagement.NotUnderstoodException;
 import jade.domain.FIPAAgentManagement.RefuseException;
-import jade.gui.GuiEvent;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.proto.ContractNetResponder;
@@ -84,8 +83,15 @@ public class VolManagementBehavior extends ContractNetResponder {
                 //messageAssociation.addReceiver(cfp.getSender());
 
                 System.out.println("Liste de vols envoyee aux associations");
+                //return super.prepareResponse(messageAssociation);
+                //myAgent.send(messageAssociation);
+                return this.prepareResponse(messageAssociation);
+            }else{
+                ACLMessage messageAssociation = cfp.createReply();
+                messageAssociation.setPerformative(ACLMessage.REFUSE);
+                //messageAssociation.addReceiver(cfp.getSender());
+                System.out.println("Pas de vols pour la date demandee");
                 return super.prepareResponse(messageAssociation);
-                //return messageAssociation;
             }
         } catch (Exception e) {
             System.out.println("Format de la demande invalide");
@@ -101,9 +107,30 @@ public class VolManagementBehavior extends ContractNetResponder {
             return super.prepareResponse(formatErrorMessage);
             //return formatErrorMessage;
         }
-
         //else
-        return null;
+        //return null;
+    }
+
+    @Override
+    protected ACLMessage prepareResponse(ACLMessage cfp) throws NotUnderstoodException, RefuseException {
+        return cfp;
+    }
+
+    @Override
+    protected ACLMessage handleAcceptProposal(ACLMessage cfp, ACLMessage propose, ACLMessage accept) throws FailureException {
+        String acceptedVols = cfp.getContent();
+        System.out.println("VOLS ACCEPTES : "+ acceptedVols);
+
+
+        //Construct wrapper --> get vols
+        //Do stuff in database
+        //update status of vol/avion
+        //update capaciteLibre
+        ACLMessage validateInformMessage = cfp.createReply();
+        validateInformMessage.setPerformative(ACLMessage.INFORM);
+        validateInformMessage.setContent(acceptedVols);
+
+        return validateInformMessage;
     }
 
 }

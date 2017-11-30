@@ -2,26 +2,36 @@ package behaviors.vols;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import containers.CompagnieContainer;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import dao.Seeder;
+import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
-import jade.gui.GuiEvent;
 import jade.lang.acl.ACLMessage;
 import messages.DemandeVols;
+import messages.VolAccepte;
 import messages.VolAssociation;
 import util.TypeVol;
 
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
+
+//PROVISOIRE POUR TESTER L'INTERACTION
+//String message = "{\"pays\":\"Guinee\",\"date\":\"2017-01-01\",\"volume\":\"10\"}";
+//System.out.println("EN DUR "+message);
 
 public class VolManagementBehaviorCyclic extends CyclicBehaviour {
 
-    private CompagnieContainer compagnieContainer;
+    public static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(VolManagementBehaviorCyclic.class);
+    private final Gson gson = new GsonBuilder().create();
 
-    public VolManagementBehaviorCyclic(CompagnieContainer compagnieContainer) {
-        this.compagnieContainer = compagnieContainer;
+    public VolManagementBehaviorCyclic(Agent agent) {
+        super(agent);
     }
 
-    //{"pays":"Guinee","date":"2017-05-16","volume":"10"}
     @Override
     public void action() {
         ACLMessage aclMessage = myAgent.receive();
@@ -29,10 +39,13 @@ public class VolManagementBehaviorCyclic extends CyclicBehaviour {
         if (aclMessage != null) {
             switch (aclMessage.getPerformative()) {
                 case ACLMessage.CFP:
-                    manageCFP(aclMessage);
+                    ACLMessage vols = manageCFP(aclMessage);
+                    myAgent.send(vols);
                     break;
 
                 case ACLMessage.ACCEPT_PROPOSAL:
+                    ACLMessage acceptation = manageACCEPT_PROPOSAL(aclMessage);
+                    myAgent.send(acceptation);
                     break;
 
                 default:
@@ -43,61 +56,87 @@ public class VolManagementBehaviorCyclic extends CyclicBehaviour {
         }
     }
 
-    private void manageCFP(ACLMessage aclMessage) {
 
-        ACLMessage response = aclMessage.createReply();
+    /**
+     * Methode qui gere la demande initiale (volume, pays, date)
+     * en renvoyant la liste des vols
+     * @param cfp message
+     * @return message..
+     */
+    //{"pays":"Guinee","date":"May 16, 2017 09:10:10 AM","volume":"10"}
+    private ACLMessage manageCFP(ACLMessage cfp) {
+        //On recupere la demande
+        String message = cfp.getContent();
+        logger.info("Demande de vol : \n" + message.toString());
 
-        //Recevoir le message d'Anne
-        //On recupere le JSON
-        String message = aclMessage.getContent();
-        System.out.println(message);
+        //On construit une reponse
+        ACLMessage response = cfp.createReply();
 
-        //PROVISOIRE POUR TESTER L'INTERACTION
-        //String message = "{\"pays\":\"Guinee\",\"date\":\"2017-05-16\",\"volume\":\"10\"}";
-        //System.out.println("EN DUR " + message);
-
-        //On construit un objet
+        //On mappe de notre cote la demande
         ObjectMapper mapper = new ObjectMapper();
+        DemandeVols demandeVols;
 
-        DemandeVols demandeVols = null;
-        //JSON from String to Object
         try {
             demandeVols = mapper.readValue(message, DemandeVols.class);
-            System.out.println(message.toString());
-            System.out.println(demandeVols.toString());
 
-            System.out.println("TO STRING " + demandeVols.toString());
-            ArrayList<VolAssociation> volsChartersPourLesAssociation = Seeder.getVols(TypeVol.Charter, demandeVols.getDate().toString(), demandeVols.getPays(), demandeVols.getVolume());
-            int tailleListeVols = volsChartersPourLesAssociation.size();
-            System.out.println("TAILLE LISTE VOLS : "+ tailleListeVols);
+            //On recupere la liste des vols pertinents
+            ArrayList<VolAssociation> volsChartersCorrespondantsALaDemande = Seeder.getVols(TypeVol.Charter, demandeVols.getDate().toString(), demandeVols.getPays(), demandeVols.getVolume());
+            int tailleListeVols = volsChartersCorrespondantsALaDemande.size();
+            logger.info("TAILLE LISTE VOLS : "+ tailleListeVols);
 
+            //On transforme cette de liste de resultats en JSON
             String messageAssociationContent = "";
             try {
-                messageAssociationContent = mapper.writeValueAsString(volsChartersPourLesAssociation);
+                messageAssociationContent = mapper.writeValueAsString(volsChartersCorrespondantsALaDemande);
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
 
-            //Retourner une propositions au groupe des associations
-            if(tailleListeVols>0) {
-                ACLMessage messageAssociation = aclMessage.createReply();
-                messageAssociation.setPerformative(ACLMessage.PROPOSE);
-                messageAssociation.setContent(messageAssociationContent);
-
-                //messageAssociation.addReceiver(aclMessage.getSender());
-                System.out.println("Liste de vols envoyee aux associations");
-                myAgent.send(response);
+            //Si la liste contient au moins 1 vol
+            //On va envoyer cette liste avec le type PROPOSE
+            if(tailleListeVols>0){
+                response.setPerformative(ACLMessage.PROPOSE);
+                response.setContent(messageAssociationContent);
+                logger.info("Liste de vols envoyee aux associations");
+            //Si nous n'avons aucun vols par rapport a la demande effectue
+            //Nous envoyons un REFUSE
+            }else{
+                response.setPerformative(ACLMessage.REFUSE);
+                logger.info("Pas de vols pour la date demandee");
             }
+        //Si jamais le mapper venait a planter on aurait une erreur de format de donnees
         } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Format de la demande invalide");
+            logger.info("Format de la demande invalide");
             String formatErrorMessageContent = "Erreur dans le format de la demande";
+            e.printStackTrace();
             response.setPerformative(ACLMessage.FAILURE);
             response.setContent(formatErrorMessageContent);
-            //response.addReceiver(aclMessage.getSender());
-            myAgent.send(response);
+
+            logger.info("INITIAL SENDER : "+cfp.getSender());
+
         }
+        return response;
     }
+
+    private ACLMessage manageACCEPT_PROPOSAL(ACLMessage acceptProposal) {
+        ////Suite la premiere demande nous recuperons une liste de vols desires
+        //String volsChoisis = acceptProposal.getContent();
+        //logger.info("Liste de vols acceptes (idVol, capacite) : \n" + volsChoisis.toString());
+//
+        ////On doit faire un petit hack pour remapper leurs vols
+        //Type collectionType = new TypeToken<Collection<VolAccepte>>() {
+        //}.getType();
+        //ArrayList<VolAccepte> volAcceptes = gson.fromJson(volsChoisis, collectionType);
+//
+        //ACLMessage response = acceptProposal.createReply();
+        //response.setPerformative(ACLMessage.INFORM);
+        //response.setContent(acceptedVols);
+//
+        ////return response;
+        return null;
+    }
+
+
 }
 
 

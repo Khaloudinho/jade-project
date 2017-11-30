@@ -5,61 +5,39 @@ import behaviors.VolManagementBehavior;
 import behaviors.vols.VolManagementBehaviorCyclic;
 import containers.CompagnieContainer;
 import jade.core.AID;
+import jade.core.Agent;
 import jade.core.behaviours.ParallelBehaviour;
 import jade.gui.GuiAgent;
 import jade.gui.GuiEvent;
 import jade.lang.acl.ACLMessage;
 import jade.wrapper.ControllerException;
 
-public class CompagnieCharterAgent extends GuiAgent implements Compagnie {
+public class CompagnieCharterAgent extends Agent implements Compagnie {
 
-    private CompagnieContainer compagnieContainer;
-
+    public static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(CompagnieCharterAgent.class);
 
     @Override
     protected void setup(){
-        compagnieContainer= (CompagnieContainer) getArguments()[0];
-        compagnieContainer.setCompagnieCharterAgent(this);
-        System.out.println("Initialisation de l'agent "+this.getAID().getName());
+        logger.info("Initialisation de l'agent :"+this.getAID().getName());
 
-        ParallelBehaviour parallelBehaviour = new ParallelBehaviour();
-        parallelBehaviour.addSubBehaviour(new RegisterAgentBehavior("compagnie", "Vols-Association"));
-        parallelBehaviour.addSubBehaviour(new VolManagementBehavior(this, null, compagnieContainer));
-        //parallelBehaviour.addSubBehaviour(new VolManagementBehaviorCyclic(compagnieContainer));
+        //ParallelBehaviour parallelBehaviour = new ParallelBehaviour();
 
-        addBehaviour(parallelBehaviour);
+        RegisterAgentBehavior registerAgentBehavior = new RegisterAgentBehavior(this,"compagnie", "Vols-Association");
+        //parallelBehaviour.addSubBehaviour(registerAgentBehavior);
+        this.addBehaviour(registerAgentBehavior);
+        //parallelBehaviour.addSubBehaviour(new VolManagementBehavior(this, null, compagnieContainer));
+
+        VolManagementBehaviorCyclic volManagementBehaviorCyclic = new VolManagementBehaviorCyclic(this);
+        //parallelBehaviour.addSubBehaviour(volManagementBehaviorCyclic);
+        this.addBehaviour(volManagementBehaviorCyclic);
+
+        //this.addBehaviour(parallelBehaviour);
 
     }
 
     @Override
     protected void takeDown(){
-        System.out.println("Destruction de l'agent");
+        logger.info("Destruction de l'agent : "+this.getName());
     }
 
-    @Override
-    protected void beforeMove() {
-        try {
-            System.out.println("Avant migration ... du container "+this.getContainerController().getContainerName());
-        } catch (ControllerException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    protected void afterMove() {
-        try {
-            System.out.println("Apres migration ..."+this.getContainerController().getContainerName());
-        } catch (ControllerException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void onGuiEvent(GuiEvent guiEvent) {
-        ACLMessage aclMessage = new ACLMessage(ACLMessage.REQUEST);
-        String livre = guiEvent.getParameter(0).toString();
-        aclMessage.setContent(livre);
-        aclMessage.addReceiver(new AID("compagniecharter", AID.ISLOCALNAME));
-        send(aclMessage);
-    }
 }
