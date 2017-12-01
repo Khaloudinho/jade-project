@@ -27,4 +27,12 @@ public class VolAccepte {
     public void setCapacite(Integer capacite) {
         this.capacite = capacite;
     }
+
+    @Override
+    public String toString() {
+        return "VolAccepte{" +
+                "uuid='" + uuid + '\'' +
+                ", capacite=" + capacite +
+                '}';
+    }
 }

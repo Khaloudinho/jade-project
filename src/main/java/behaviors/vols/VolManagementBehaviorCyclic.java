@@ -118,22 +118,27 @@ public class VolManagementBehaviorCyclic extends CyclicBehaviour {
         return response;
     }
 
+    /*[{"uuid":"7b362dcd-6e80-4760-93d7-f17e267c0c2d", "capacite":10},
+     {"uuid":"f2794c24-f64b-4941-a42d-85243c492601", "capacite":20}]*/
+    //!\prevoir cas capacite trop grosse ?
     private ACLMessage manageACCEPT_PROPOSAL(ACLMessage acceptProposal) {
-        ////Suite la premiere demande nous recuperons une liste de vols desires
-        //String volsChoisis = acceptProposal.getContent();
-        //logger.info("Liste de vols acceptes (idVol, capacite) : \n" + volsChoisis.toString());
-//
-        ////On doit faire un petit hack pour remapper leurs vols
-        //Type collectionType = new TypeToken<Collection<VolAccepte>>() {
-        //}.getType();
-        //ArrayList<VolAccepte> volAcceptes = gson.fromJson(volsChoisis, collectionType);
-//
-        //ACLMessage response = acceptProposal.createReply();
-        //response.setPerformative(ACLMessage.INFORM);
+        //Suite la premiere demande nous recuperons une liste de vols desires
+        String volsChoisis = acceptProposal.getContent();
+        logger.info("Liste de vols acceptes (idVol, capacite) : \n" + volsChoisis.toString());
+
+        //Nous preparons une confirmation du traitement
+        ACLMessage response = acceptProposal.createReply();
+        response.setPerformative(ACLMessage.INFORM);
+
+        //On doit faire un petit hack pour remapper leurs vols
+        Type collectionType = new TypeToken<Collection<VolAccepte>>() {
+        }.getType();
+        ArrayList<VolAccepte> volAcceptes = gson.fromJson(volsChoisis, collectionType);
+
+        //On met a jour l'etat de la base de donnees
+
         //response.setContent(acceptedVols);
-//
-        ////return response;
-        return null;
+        return response;
     }
 
 
