@@ -12,10 +12,8 @@ import jade.lang.acl.ACLMessage;
 import messages.DemandeVols;
 import messages.VolAccepte;
 import messages.VolAssociation;
-import metier.Vol;
 import util.TypeVol;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;

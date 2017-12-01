@@ -18,21 +18,16 @@ public class CompagnieCharterAgent extends Agent implements Compagnie {
 
     @Override
     protected void setup(){
-        logger.info("Initialisation de l'agent :"+this.getAID().getName());
-
-        //ParallelBehaviour parallelBehaviour = new ParallelBehaviour();
+        logger.info("Initialisation de l'agent : "+this.getName());
 
         RegisterAgentBehavior registerAgentBehavior = new RegisterAgentBehavior(this,"compagnie", "Vols-Association");
-        //parallelBehaviour.addSubBehaviour(registerAgentBehavior);
         this.addBehaviour(registerAgentBehavior);
-        //parallelBehaviour.addSubBehaviour(new VolManagementBehavior(this, null, compagnieContainer));
+
+        //VolManagementBehavior volManagementBehavior = new VolManagementBehavior(this, null);
+        //this.addBehaviour(volManagementBehavior);
 
         VolManagementBehaviorCyclic volManagementBehaviorCyclic = new VolManagementBehaviorCyclic(this);
-        //parallelBehaviour.addSubBehaviour(volManagementBehaviorCyclic);
         this.addBehaviour(volManagementBehaviorCyclic);
-
-        //this.addBehaviour(parallelBehaviour);
-
     }
 
     @Override
