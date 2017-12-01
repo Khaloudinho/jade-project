@@ -124,10 +124,10 @@ public class VolManagementBehaviorCyclic extends CyclicBehaviour {
     //!\prevoir cas capacite trop grosse ?
     private ACLMessage manageACCEPT_PROPOSAL(ACLMessage acceptProposal) {
 
-        //FIX ME
+        //FIX ME @sana
         //trouver un moyen de connaitre la quantite d'argent gagne (par rapport a la liste communique) : attribut ?
         //match/intersect des deux liste
-        //recuperation  du prix mise dans notre portefeuille
+        //recuperation du prix mise dans notre portefeuille = attribut representant l'argent de l'agent
 
         //Suite la premiere demande nous recuperons une liste de vols desires
         String volsChoisis = acceptProposal.getContent();
