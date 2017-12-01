@@ -11,6 +11,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Seeder {
@@ -71,13 +73,21 @@ public class Seeder {
         return queryVolParId.getResultList();
     }*/
 
-    public static List<Object[]> daoGetVols(TypeVol typeVol, String query, String date, String pays, int capaciteLibre){
-        Query queryVolsCorrespondantsALaDemande = em.createNamedQuery(query, Object[].class);
-        queryVolsCorrespondantsALaDemande.setParameter("date", Date.valueOf(date));
-        queryVolsCorrespondantsALaDemande.setParameter("pays", pays);
-        queryVolsCorrespondantsALaDemande.setParameter("capaciteLibre", capaciteLibre);
-        queryVolsCorrespondantsALaDemande.setParameter("typeVol", typeVol);
-        return queryVolsCorrespondantsALaDemande.getResultList();
+    public static List<Object[]> daoGetVols(TypeVol typeVol, String query, String date, String pays, int capaciteLibre) {
+        Query queryVolsReguliersCorrespondantsALaDemande = em.createNamedQuery(query, Object[].class);
+        String associationDatePattern = "MMM dd, yyyy HH:mm:ss a";
+        java.util.Date dateVol = null;
+        try {
+            dateVol = new SimpleDateFormat(associationDatePattern).parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        System.out.println("DATE : "+dateVol.toString());
+        queryVolsReguliersCorrespondantsALaDemande.setParameter("date", new Date(dateVol.getTime()));
+        queryVolsReguliersCorrespondantsALaDemande.setParameter("pays", pays);
+        queryVolsReguliersCorrespondantsALaDemande.setParameter("capaciteLibre", capaciteLibre);
+        queryVolsReguliersCorrespondantsALaDemande.setParameter("typeVol", typeVol);
+        return queryVolsReguliersCorrespondantsALaDemande.getResultList();
     }
 
     public static void showFlightsByTypeResults(List<Object[]> vols){
