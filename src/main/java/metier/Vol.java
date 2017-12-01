@@ -22,7 +22,11 @@ import java.sql.Date;
 
         @NamedQuery(
                 name = "Vol.calculerLesPrixDesVols",
-                query = "SELECT v.id, v.avion.consommationCarburant, v.aeroportArrivee.heuresVolDepuisParis, v.aeroportArrivee.taxeAeroport, v.aeroportArrivee.lieu.ville FROM Vol v ")
+                query = "SELECT v.id, v.avion.consommationCarburant, v.aeroportArrivee.heuresVolDepuisParis, v.aeroportArrivee.taxeAeroport, v.aeroportArrivee.lieu.ville FROM Vol v "),
+        @NamedQuery(
+                name = "Vol.updateCapaciteLibreVol",
+                query = "UPDATE Vol v SET v.capaciteLibre = (v.capaciteLibre-:capacitePrise) WHERE v.id = :idVol "
+        ),
 })
 
 public class Vol implements Serializable {
@@ -44,16 +48,21 @@ public class Vol implements Serializable {
     @OneToOne
     private Aeroport aeroportArrivee;
 
+    @Column(nullable = true)
+    private int capaciteLibre;
+
+
     public Vol() {
     }
 
-    public Vol(Date dateDepart, Date dateArrivee, TypeVol typeVol, Avion avion, Aeroport aeroportArrivee) {
+    public Vol(Date dateDepart, Date dateArrivee, TypeVol typeVol, Avion avion, Aeroport aeroportArrivee, int capaciteLibre) {
         this.dateDepart = dateDepart;
         this.dateArrivee = dateArrivee;
         this.typeVol = typeVol;
         this.avion = avion;
         this.aeroportArrivee = aeroportArrivee;
         this.prixVol = 0;
+        this.capaciteLibre=capaciteLibre;
     }
 
     public String getIdVol() {

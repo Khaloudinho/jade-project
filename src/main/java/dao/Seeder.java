@@ -54,6 +54,15 @@ public class Seeder {
         return queryVolsReguliersCorrespondantsALaDemande.getResultList();
     }
 
+    public static void updateCapaciteVol(String uuid, Integer capacitePrise){
+        em.getTransaction().begin();
+        Query queryUpdateCapaciteVol = em.createNamedQuery("Vol.updateCapaciteLibreVol");
+        queryUpdateCapaciteVol.setParameter("idVol",uuid);
+        queryUpdateCapaciteVol.setParameter("capacitePrise", capacitePrise);
+        queryUpdateCapaciteVol.executeUpdate();
+        em.getTransaction().commit();
+    }
+
     public static void showFlightsResults(List<Object[]> volsChartersCorrespondantsALaDemande){
         for (Object[] o : volsChartersCorrespondantsALaDemande){
             System.out.println("============== VOL CORRESPONDANT ==============");
@@ -197,13 +206,13 @@ public class Seeder {
         }
 
         Set<Vol> vols = new HashSet<>();
-        Vol v1 = new Vol(dateDepart, dateArrivee, TypeVol.Charter, av1, a1);
-        Vol v2 = new Vol(dateDepart, dateArrivee, TypeVol.Charter, av2, a2);
-        Vol v3 = new Vol(dateDepartVolsReguliers, dateArriveeVolsReguliers, TypeVol.Regulier, av3, a3);
-        Vol v4 = new Vol(dateDepartVolsReguliers, dateArriveeVolsReguliers, TypeVol.Regulier, av4, a4);
-        Vol v5 = new Vol(dateDepartVolsReguliers, dateArriveeVolsReguliers, TypeVol.Regulier, av2, a5);
-        Vol v6 = new Vol(dateDepartVolsReguliers, dateArriveeVolsReguliers, TypeVol.Regulier, av1, a6);
-        Vol v7 = new Vol(dateDepart, dateArriveeVolsReguliers, TypeVol.Regulier, av3, a1);
+        Vol v1 = new Vol(dateDepart, dateArrivee, TypeVol.Charter, av1, a1, 40);
+        Vol v2 = new Vol(dateDepart, dateArrivee, TypeVol.Charter, av2, a2, 40);
+        Vol v3 = new Vol(dateDepartVolsReguliers, dateArriveeVolsReguliers, TypeVol.Regulier, av3, a3, 40);
+        Vol v4 = new Vol(dateDepartVolsReguliers, dateArriveeVolsReguliers, TypeVol.Regulier, av4, a4, 40);
+        Vol v5 = new Vol(dateDepartVolsReguliers, dateArriveeVolsReguliers, TypeVol.Regulier, av2, a5, 40);
+        Vol v6 = new Vol(dateDepartVolsReguliers, dateArriveeVolsReguliers, TypeVol.Regulier, av1, a6, 40);
+        Vol v7 = new Vol(dateDepart, dateArriveeVolsReguliers, TypeVol.Regulier, av3, a1, 40);
 
         vols.add(v1);
         vols.add(v2);

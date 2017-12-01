@@ -12,6 +12,7 @@ import jade.lang.acl.ACLMessage;
 import messages.DemandeVols;
 import messages.VolAccepte;
 import messages.VolAssociation;
+import metier.Vol;
 import util.TypeVol;
 
 import java.io.IOException;
@@ -118,10 +119,16 @@ public class VolManagementBehaviorCyclic extends CyclicBehaviour {
         return response;
     }
 
-    /*[{"uuid":"7b362dcd-6e80-4760-93d7-f17e267c0c2d", "capacite":10},
-     {"uuid":"f2794c24-f64b-4941-a42d-85243c492601", "capacite":20}]*/
+    /*[{"uuid":"c0628118-e751-4ff2-8ee3-2d4d053262c2", "capacite":10},
+     {"uuid":"c0a7cbdc-ac69-470f-997a-465a7d0fc584", "capacite":20}]*/
     //!\prevoir cas capacite trop grosse ?
     private ACLMessage manageACCEPT_PROPOSAL(ACLMessage acceptProposal) {
+
+        //FIX ME
+        //trouver un moyen de connaitre la quantite d'argent gagne (par rapport a la liste communique) : attribut ?
+        //match/intersect des deux liste
+        //recuperation  du prix mise dans notre portefeuille
+
         //Suite la premiere demande nous recuperons une liste de vols desires
         String volsChoisis = acceptProposal.getContent();
         logger.info("Liste de vols acceptes (idVol, capacite) : \n" + volsChoisis.toString());
@@ -136,12 +143,15 @@ public class VolManagementBehaviorCyclic extends CyclicBehaviour {
         ArrayList<VolAccepte> volAcceptes = gson.fromJson(volsChoisis, collectionType);
 
         //On met a jour l'etat de la base de donnees
-
+        for (VolAccepte volAccepte:
+             volAcceptes) {
+            String idVol = volAccepte.getUuid();
+            Integer capaciteAUtiliser = volAccepte.getCapacite();
+            Seeder.updateCapaciteVol(idVol, capaciteAUtiliser);
+        }
         //response.setContent(acceptedVols);
         return response;
     }
-
-
 }
 
 
