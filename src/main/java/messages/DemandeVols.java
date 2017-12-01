@@ -1,17 +1,17 @@
 package messages;
 
-import java.sql.Date;
+import java.text.ParseException;
 
 public class DemandeVols {
 
     private String pays;
-    private Date date;
+    private String date;
     private Integer volume;
 
     public DemandeVols() {
     }
 
-    public DemandeVols(String pays, Date date, Integer volume) {
+    public DemandeVols(String pays, String date, Integer volume) throws ParseException {
         this.pays = pays;
         this.date = date;
         this.volume = volume;
@@ -25,11 +25,11 @@ public class DemandeVols {
         this.pays = pays;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 

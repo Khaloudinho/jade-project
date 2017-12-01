@@ -2,8 +2,8 @@ package messages;
 
 import util.TypeVol;
 
-import java.lang.reflect.Type;
-import java.sql.Date;
+import java.text.DateFormat;
+import java.util.Date;
 
 public class VolAssociation {
 
@@ -13,7 +13,7 @@ public class VolAssociation {
 
     private String pays;
 
-    private Date dateArrivee;
+    private String dateArrivee;
 
     private int capaciteLibre;
 
@@ -25,7 +25,8 @@ public class VolAssociation {
         this.idVol = idVol;
         this.aeroport = aeroport;
         this.pays = pays;
-        this.dateArrivee = dateArrivee;
+        this.dateArrivee = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(dateArrivee).toString();
+        //this.dateArrivee = dateArrivee;
         this.capaciteLibre = capaciteLibre;
         this.prix = prix;
         this.typeVol = typeVol;
@@ -55,11 +56,11 @@ public class VolAssociation {
         this.pays = pays;
     }
 
-    public Date getDateArrivee() {
+    public String getDateArrivee() {
         return dateArrivee;
     }
 
-    public void setDateArrivee(Date dateArrivee) {
+    public void setDateArrivee(String dateArrivee) {
         this.dateArrivee = dateArrivee;
     }
 

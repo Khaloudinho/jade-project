@@ -1,5 +1,7 @@
 package behaviors;
 
+//{"volume":0,"date":"Nov 30, 2017 10:33:51 AM","pays":"Guinee"}
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import containers.CompagnieContainer;
@@ -87,6 +89,7 @@ public class VolManagementBehavior extends ContractNetResponder {
         } catch (Exception e) {
             System.out.println("Format de la demande invalide");
             String formatErrorMessageContent = "Erreur dans le format de la demande";
+            e.printStackTrace();
             ACLMessage formatErrorMessage = cfp.createReply();
             formatErrorMessage.setPerformative(ACLMessage.FAILURE);
             formatErrorMessage.setContent(formatErrorMessageContent);
