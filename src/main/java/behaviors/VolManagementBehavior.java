@@ -57,14 +57,13 @@ public class VolManagementBehavior extends ContractNetResponder {
 
         try {
             demandeVols = mapper.readValue(message, DemandeVols.class);
-            System.out.println(message.toString());
+            System.out.println(message);
             System.out.println(demandeVols.toString());
 
             System.out.println("TO STRING " + demandeVols.toString());
             ArrayList<VolAssociation> volsChartersCorrespondantsALaDemande = Seeder.getVols(TypeVol.Charter, demandeVols.getDate().toString(), demandeVols.getPays(), demandeVols.getVolume());
             int tailleListeVols = volsChartersCorrespondantsALaDemande.size();
             System.out.println("TAILLE LISTE VOLS : "+ tailleListeVols);
-
 
             String messageAssociationContent = "";
             try {
@@ -74,7 +73,7 @@ public class VolManagementBehavior extends ContractNetResponder {
             }
 
             //Retourner une propositions au groupe des associations
-            if(tailleListeVols>0){
+            if (tailleListeVols > 0) {
                 ACLMessage messageAssociation = cfp.createReply();
                 messageAssociation.setPerformative(ACLMessage.PROPOSE);
                 messageAssociation.setContent(messageAssociationContent);

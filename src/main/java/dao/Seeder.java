@@ -19,13 +19,36 @@ public class Seeder {
     private static EntityManager em = emf.createEntityManager();
     private static ObjectMapper mapper = new ObjectMapper();
 
+    /*public static void getVolsParTypeVol(TypeVol typeVol) {
+
+        String query = "Vol.getVolsParType";
+        List<Object[]> vols = daoGetVolsParType(typeVol, query);
+        showFlightsByTypeResults(vols);
+
+        for (Object[] o : vols) {
+            int prix = Integer.parseInt(o[2].toString());
+            long dateCourante = System.currentTimeMillis();
+            long dateDepart = Date.valueOf(o[1].toString()).getTime();
+            if (prix > prix * 100 / 120 && dateDepart > dateCourante) {
+                Vol vol = (Vol)getVolParId(o[0].toString());
+                vol.setPrixVol(prix * .9);
+            }
+        }
+    }
+
+    public static Object getVolParId(String idVol) {
+        String query = "Vol.getVolParId";
+        Object vol = daoGetVolParId(idVol, query);
+        return vol;
+    }*/
+
     public static ArrayList<VolAssociation> getVols(TypeVol typeVol, String date, String pays, int capaciteLibre) throws JsonProcessingException {
 
         String query = "Vol.getVolsCorrespondantsALaDemande";
         ArrayList<VolAssociation> volsPourLesAssociation;
         List<Object[]> volsCorrespondantsALaDemande;
 
-        volsCorrespondantsALaDemande = daoGetvols(typeVol,query,date,pays,capaciteLibre);
+        volsCorrespondantsALaDemande = daoGetVols(typeVol, query, date, pays, capaciteLibre);
         showFlightsResults(volsCorrespondantsALaDemande);
         volsPourLesAssociation = formatVol(volsCorrespondantsALaDemande);
 
@@ -36,13 +59,35 @@ public class Seeder {
         return volsPourLesAssociation;
     }
 
-    public static List<Object[]> daoGetvols(TypeVol typeVol, String query, String date, String pays, int capaciteLibre){
-        Query queryVolsReguliersCorrespondantsALaDemande = em.createNamedQuery(query, Object[].class);
-        queryVolsReguliersCorrespondantsALaDemande.setParameter("date", Date.valueOf(date));
-        queryVolsReguliersCorrespondantsALaDemande.setParameter("pays", pays);
-        queryVolsReguliersCorrespondantsALaDemande.setParameter("capaciteLibre", capaciteLibre);
-        queryVolsReguliersCorrespondantsALaDemande.setParameter("typeVol", typeVol);
-        return queryVolsReguliersCorrespondantsALaDemande.getResultList();
+    /*public static List<Object[]> daoGetVolsParType(TypeVol typeVol, String query){
+        Query queryVolsParType = em.createNamedQuery(query, Object[].class);
+        queryVolsParType.setParameter("typeVol", typeVol);
+        return queryVolsParType.getResultList();
+    }
+
+    public static List<Object[]> daoGetVolParId(String idVol, String query) {
+        Query queryVolParId = em.createNamedQuery(query, Object.class);
+        queryVolParId.setParameter("id", idVol);
+        return queryVolParId.getResultList();
+    }*/
+
+    public static List<Object[]> daoGetVols(TypeVol typeVol, String query, String date, String pays, int capaciteLibre){
+        Query queryVolsCorrespondantsALaDemande = em.createNamedQuery(query, Object[].class);
+        queryVolsCorrespondantsALaDemande.setParameter("date", Date.valueOf(date));
+        queryVolsCorrespondantsALaDemande.setParameter("pays", pays);
+        queryVolsCorrespondantsALaDemande.setParameter("capaciteLibre", capaciteLibre);
+        queryVolsCorrespondantsALaDemande.setParameter("typeVol", typeVol);
+        return queryVolsCorrespondantsALaDemande.getResultList();
+    }
+
+    public static void showFlightsByTypeResults(List<Object[]> vols){
+        for (Object[] o : vols){
+            System.out.println("============== VOL CORRESPONDANT ==============");
+            System.out.println("Id vol : " + o[0].toString());
+            System.out.println("Date départ : " + o[1].toString());
+            System.out.println("Prix : " + o[2].toString());
+            System.out.println("========================================================");
+        }
     }
 
     public static void showFlightsResults(List<Object[]> volsChartersCorrespondantsALaDemande){
@@ -83,18 +128,17 @@ public class Seeder {
         System.out.println("Requête : Vol.calculerLesPrixDesVols");
         Query queryCalculerLesPrixDesVols = em.createNamedQuery("Vol.calculerLesPrixDesVols", Object[].class);
         List<Object[]> paramPourCalculerLesPrixDesVols = queryCalculerLesPrixDesVols.getResultList();
-        Map<String, Integer> tousLesPrix = new HashMap<>();
-
+        Map<String, Integer> tousLesPrixCoutant = new HashMap<>();
         for (Object[] o : paramPourCalculerLesPrixDesVols) {
             String idVol = o[0].toString();
             int consommationCarburant = Integer.valueOf(o[1].toString());
             int heuresVolDepuisParis = Integer.valueOf(o[2].toString());
             int taxeAeroport = Integer.valueOf(o[3].toString());
-            int prix = consommationCarburant * heuresVolDepuisParis * prixKeroseneParHeure + taxeAeroport;
-            tousLesPrix.put(idVol, prix);
+            int prixCoutant = consommationCarburant * heuresVolDepuisParis * prixKeroseneParHeure + taxeAeroport;
+            tousLesPrixCoutant.put(idVol, prixCoutant);
         }
 
-        return tousLesPrix;
+        return tousLesPrixCoutant;
     }
 
     public static void main(String [] args) throws JsonProcessingException {
@@ -224,8 +268,11 @@ public class Seeder {
         final Map<String, Integer> prixVols = calculerPrixVols();
 
         for (Vol vol : vols) {
-            vol.setPrixVol(prixVols.get(vol.getIdVol()));
+            vol.setPrixCoutant(prixVols.get(vol.getIdVol()));
+            vol.setPrixDeVente(prixVols.get(vol.getIdVol()) * 1.2);
         }
+
+        //getVolsParTypeVol(TypeVol.Charter);
 
         em.getTransaction().commit();
         em.close();
