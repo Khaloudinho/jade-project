@@ -12,7 +12,7 @@ import java.sql.Date;
         @NamedQuery(
                 name = "Vol.getVolsCorrespondantsALaDemande",
                 query = "SELECT v.aeroportArrivee.nomAeroport, v.aeroportArrivee.lieu.pays, " +
-                        "v.dateArrivee, v.capaciteLibre, v.prixVol, " +
+                        "v.dateArrivee, v.capaciteLibre, v.prixDeVente, " +
                         "v.idVol " +
                         "FROM Vol v " +
                         "WHERE v.dateArrivee = :date " +
@@ -37,7 +37,7 @@ public class Vol implements Serializable {
     private String idVol;
     private Date dateDepart;
     private Date dateArrivee;
-    private double prixVol;
+    private double prixCoutant, prixDeVente;
 
     @Enumerated(EnumType.STRING)
     private TypeVol typeVol;
@@ -51,7 +51,6 @@ public class Vol implements Serializable {
     @Column(nullable = true)
     private int capaciteLibre;
 
-
     public Vol() {
     }
 
@@ -61,8 +60,9 @@ public class Vol implements Serializable {
         this.typeVol = typeVol;
         this.avion = avion;
         this.aeroportArrivee = aeroportArrivee;
-        this.prixVol = 0;
         this.capaciteLibre=capaciteLibre;
+        this.prixCoutant = 0;
+        this.prixDeVente = 0;
     }
 
     public String getIdVol() {
@@ -113,11 +113,19 @@ public class Vol implements Serializable {
         this.aeroportArrivee = aeroportArrivee;
     }
 
-    public double getPrixVol() {
-        return prixVol;
+    public double getPrixCoutant() {
+        return prixCoutant;
     }
 
-    public void setPrixVol(double prixVol) {
-        this.prixVol = prixVol;
+    public void setPrixCoutant(double prixCoutant) {
+        this.prixCoutant = prixCoutant;
+    }
+
+    public double getPrixDeVente() {
+        return prixDeVente;
+    }
+
+    public void setPrixDeVente(double prixDeVente) {
+        this.prixDeVente = prixDeVente;
     }
 }
