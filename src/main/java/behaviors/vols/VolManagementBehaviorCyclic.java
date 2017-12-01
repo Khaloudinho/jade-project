@@ -125,7 +125,7 @@ public class VolManagementBehaviorCyclic extends CyclicBehaviour {
     private ACLMessage manageACCEPT_PROPOSAL(ACLMessage acceptProposal) {
 
         //FIX ME @sana
-        //trouver un moyen de connaitre la quantite d'argent gagne (par rapport a la liste communique) : attribut ?
+        //trouver un moyen de connaitre la quantite d'argent gagne (par rapport a la liste communique) : liste des vols est de leur prix attribut ?
         //match/intersect des deux liste
         //recuperation du prix mise dans notre portefeuille = attribut representant l'argent de l'agent
 
