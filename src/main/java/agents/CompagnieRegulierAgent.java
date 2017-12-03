@@ -23,7 +23,7 @@ public class CompagnieRegulierAgent extends GuiAgent implements Compagnie {
         ParallelBehaviour parallelBehaviour = new ParallelBehaviour();
         parallelBehaviour.addSubBehaviour(new RegisterAgentBehavior(this,"Vols", "Vols-Association"));
         //parallelBehaviour.addSubBehaviour(new VolManagementBehavior(compagnieContainer));
-        parallelBehaviour.addSubBehaviour(new VolManagementBehavior(this, null, compagnieContainer));
+        //parallelBehaviour.addSubBehaviour(new VolManagementBehavior(this, null, compagnieContainer));
         addBehaviour(parallelBehaviour);
 
     }

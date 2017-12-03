@@ -2,6 +2,7 @@ package dao;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import messages.DemandeVols;
 import messages.VolAssociation;
 import metier.*;
 import util.TypeVol;
@@ -296,5 +297,15 @@ public class Seeder {
         em.getTransaction().commit();
         em.close();
         emf.close();
+    }
+
+    public static ArrayList<VolAssociation> getVolsAssociation(DemandeVols demandeVols){
+        ArrayList<VolAssociation> volAssociations = new ArrayList<VolAssociation>();
+        try {
+            volAssociations = getVols(TypeVol.Charter, demandeVols.getDate().toString(), demandeVols.getPays(), demandeVols.getVolume());
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return volAssociations;
     }
 }

@@ -27,6 +27,7 @@ public class CompagnieContainer extends Application {
 
             Runtime runtime = Runtime.instance();
             Profile profile = new ProfileImpl(false);
+            //profile.setParameter(Profile.MAIN_HOST, "192.168.43.79");
             profile.setParameter(Profile.MAIN_HOST, "127.0.0.1");
             agentContainer = runtime.createAgentContainer(profile);
 

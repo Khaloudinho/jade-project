@@ -1,13 +1,13 @@
 package behaviors.vols;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import dao.Seeder;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
+import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import messages.DemandeVols;
 import messages.VolAccepte;
@@ -38,7 +38,13 @@ public class VolManagementBehaviorCyclic extends CyclicBehaviour {
         if (aclMessage != null) {
             switch (aclMessage.getPerformative()) {
                 case ACLMessage.CFP:
-                    ACLMessage vols = manageCFP(aclMessage);
+                    ACLMessage vols = null;
+                    try {
+                        vols = manageCFP(aclMessage);
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+                    //vols.setSender((AID) aclMessage.getAllReceiver().next());
                     myAgent.send(vols);
                     break;
 
@@ -59,61 +65,60 @@ public class VolManagementBehaviorCyclic extends CyclicBehaviour {
     /**
      * Methode qui gere la demande initiale (volume, pays, date)
      * en renvoyant la liste des vols
+     *
      * @param cfp message
      * @return message..
      */
     //{"pays":"Guinee","date":"May 16, 2017 09:10:10 AM","volume":"10"}
-    private ACLMessage manageCFP(ACLMessage cfp) {
+    private ACLMessage manageCFP(ACLMessage cfp) throws JsonProcessingException {
         //On recupere la demande
-        String message = cfp.getContent();
-        logger.info("Demande de vol : \n" + message.toString());
+        //String message = cfp.getContent();
+        String message = "{\"pays\":\"Guinee\",\"date\":\"May 16, 2017 09:10:10 AM\",\"volume\":\"10\"}";
+        logger.info("Demande de vol : \n" + message);
 
         //On construit une reponse
         ACLMessage response = cfp.createReply();
+        response.setProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET);
 
         //On mappe de notre cote la demande
-        ObjectMapper mapper = new ObjectMapper();
         DemandeVols demandeVols;
 
-        try {
-            demandeVols = mapper.readValue(message, DemandeVols.class);
+        demandeVols = gson.fromJson(message, DemandeVols.class);
 
-            //On recupere la liste des vols pertinents
-            ArrayList<VolAssociation> volsChartersCorrespondantsALaDemande = Seeder.getVols(TypeVol.Charter, demandeVols.getDate().toString(), demandeVols.getPays(), demandeVols.getVolume());
-            int tailleListeVols = volsChartersCorrespondantsALaDemande.size();
-            logger.info("TAILLE LISTE VOLS : "+ tailleListeVols);
+        //On recupere la liste des vols pertinents
+        ArrayList<VolAssociation> volsChartersCorrespondantsALaDemande = new ArrayList<VolAssociation>();
+        VolAssociation volAssociation = new VolAssociation("test", "Leopold san","Guinee",new java.util.Date(), 40, 40, TypeVol.Charter);
 
-            //On transforme cette de liste de resultats en JSON
-            String messageAssociationContent = "";
-            try {
-                messageAssociationContent = mapper.writeValueAsString(volsChartersCorrespondantsALaDemande);
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
+        //volsChartersCorrespondantsALaDemande.add(volAssociation);
+        //VolAssociation volAssociation2 = new VolAssociation("test2", "Leopold san","Guinee",new java.util.Date(), 40, 40, TypeVol.Charter);
+        //volsChartersCorrespondantsALaDemande.add(volAssociation2);
+        //ArrayList<VolAssociation> volAssociations = Seeder.getVols(TypeVol.Charter, demandeVols.getDate(), demandeVols.getPays(), demandeVols.getVolume());
+        volsChartersCorrespondantsALaDemande = new ArrayList<>();
+        //VolAssociation vtest = volAssociations.get(0);
+        volsChartersCorrespondantsALaDemande.add(volAssociation);
 
-            //Si la liste contient au moins 1 vol
-            //On va envoyer cette liste avec le type PROPOSE
-            if(tailleListeVols>0){
-                response.setPerformative(ACLMessage.PROPOSE);
-                response.setContent(messageAssociationContent);
-                logger.info("Liste de vols envoyee aux associations");
+        int tailleListeVols = volsChartersCorrespondantsALaDemande.size();
+        logger.info("TAILLE LISTE VOLS : " + tailleListeVols);
+
+        //On transforme cette de liste de resultats en JSON
+        String messageAssociationContent = "";
+
+        messageAssociationContent = gson.toJson(volsChartersCorrespondantsALaDemande);
+
+        //Si la liste contient au moins 1 vol
+        //On va envoyer cette liste avec le type PROPOSE
+        if (tailleListeVols > 0) {
+            response.setPerformative(ACLMessage.PROPOSE);
+            response.setContent(messageAssociationContent);
+            logger.info("Liste de vols envoyee aux associations");
             //Si nous n'avons aucun vols par rapport a la demande effectue
             //Nous envoyons un REFUSE
-            }else{
-                response.setPerformative(ACLMessage.REFUSE);
-                logger.info("Pas de vols pour la date demandee");
-            }
-        //Si jamais le mapper venait a planter on aurait une erreur de format de donnees
-        } catch (Exception e) {
-            logger.info("Format de la demande invalide");
-            String formatErrorMessageContent = "Erreur dans le format de la demande";
-            e.printStackTrace();
-            response.setPerformative(ACLMessage.FAILURE);
-            response.setContent(formatErrorMessageContent);
-
-            logger.info("INITIAL SENDER : "+cfp.getSender());
-
+        } else {
+            response.setPerformative(ACLMessage.REFUSE);
+            logger.info("Pas de vols pour la date demandee");
         }
+        //Si jamais le mapper venait a planter on aurait une erreur de format de donnees
+        logger.info("CONTENU RESPONSE : " + response.toString());
         return response;
     }
 
@@ -141,8 +146,8 @@ public class VolManagementBehaviorCyclic extends CyclicBehaviour {
         ArrayList<VolAccepte> volAcceptes = gson.fromJson(volsChoisis, collectionType);
 
         //On met a jour l'etat de la base de donnees
-        for (VolAccepte volAccepte:
-             volAcceptes) {
+        for (VolAccepte volAccepte :
+                volAcceptes) {
             String idVol = volAccepte.getUuid();
             Integer capaciteAUtiliser = volAccepte.getCapacite();
             Seeder.updateCapaciteVol(idVol, capaciteAUtiliser);
