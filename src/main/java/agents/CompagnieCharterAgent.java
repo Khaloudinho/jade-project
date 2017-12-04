@@ -1,16 +1,8 @@
 package agents;
 
 import behaviors.RegisterAgentBehavior;
-import behaviors.VolManagementBehavior;
 import behaviors.vols.VolManagementBehaviorCyclic;
-import containers.CompagnieContainer;
-import jade.core.AID;
 import jade.core.Agent;
-import jade.core.behaviours.ParallelBehaviour;
-import jade.gui.GuiAgent;
-import jade.gui.GuiEvent;
-import jade.lang.acl.ACLMessage;
-import jade.wrapper.ControllerException;
 import util.EnregistrementService;
 
 public class CompagnieCharterAgent extends Agent implements Compagnie {
@@ -23,7 +15,13 @@ public class CompagnieCharterAgent extends Agent implements Compagnie {
     protected void setup(){
         logger.info("Initialisation de l'agent : "+this.getName());
 
-        EnregistrementService.enregistrer(this,SERVICE_TYPE, SERVICE_NAME);
+        //EnregistrementService.enregistrer(this,SERVICE_TYPE, SERVICE_NAME);
+
+        RegisterAgentBehavior registerAgentBehavior = new RegisterAgentBehavior(this,"compagnie", "Vols-Association");
+        //parallelBehaviour.addSubBehaviour(registerAgentBehavior);
+        this.addBehaviour(registerAgentBehavior);
+
+
         //VolManagementBehavior volManagementBehavior = new VolManagementBehavior(this, null);
         //this.addBehaviour(volManagementBehavior);
 

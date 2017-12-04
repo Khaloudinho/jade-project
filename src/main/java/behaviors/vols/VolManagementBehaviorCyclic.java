@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import dao.Seeder;
+import dao.DatabaseService;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.domain.FIPANames;
@@ -17,6 +17,7 @@ import util.TypeVol;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 
 //PROVISOIRE POUR TESTER L'INTERACTION
 //String message = "{\"pays\":\"Guinee\",\"date\":\"2017-01-01\",\"volume\":\"10\"}";
@@ -39,12 +40,7 @@ public class VolManagementBehaviorCyclic extends CyclicBehaviour {
             switch (aclMessage.getPerformative()) {
                 case ACLMessage.CFP:
                     ACLMessage vols = null;
-                    try {
-                        vols = manageCFP(aclMessage);
-                    } catch (JsonProcessingException e) {
-                        e.printStackTrace();
-                    }
-                    //vols.setSender((AID) aclMessage.getAllReceiver().next());
+                    vols = manageCFP(aclMessage);
                     myAgent.send(vols);
                     break;
 
@@ -70,7 +66,7 @@ public class VolManagementBehaviorCyclic extends CyclicBehaviour {
      * @return message..
      */
     //{"pays":"Guinee","date":"May 16, 2017 09:10:10 AM","volume":"10"}
-    private ACLMessage manageCFP(ACLMessage cfp) throws JsonProcessingException {
+    private ACLMessage manageCFP(ACLMessage cfp) {
         //On recupere la demande
         //String message = cfp.getContent();
         String message = "{\"pays\":\"Guinee\",\"date\":\"May 16, 2017 09:10:10 AM\",\"volume\":\"10\"}";
@@ -87,15 +83,10 @@ public class VolManagementBehaviorCyclic extends CyclicBehaviour {
 
         //On recupere la liste des vols pertinents
         ArrayList<VolAssociation> volsChartersCorrespondantsALaDemande = new ArrayList<VolAssociation>();
-        VolAssociation volAssociation = new VolAssociation("test", "Leopold san","Guinee",new java.util.Date(), 40, 40, TypeVol.Charter);
+        //volsChartersCorrespondantsALaDemande.add(new VolAssociation("56867798", "Leopold San", "Guinee", new java.util.Date(), 40, 40, TypeVol.Charter));
+        //volsChartersCorrespondantsALaDemande.add(new VolAssociation("568677989657698", "Leopold San2", "Guinee", new java.util.Date(), 40, 40, TypeVol.Charter));
 
-        //volsChartersCorrespondantsALaDemande.add(volAssociation);
-        //VolAssociation volAssociation2 = new VolAssociation("test2", "Leopold san","Guinee",new java.util.Date(), 40, 40, TypeVol.Charter);
-        //volsChartersCorrespondantsALaDemande.add(volAssociation2);
-        //ArrayList<VolAssociation> volAssociations = Seeder.getVols(TypeVol.Charter, demandeVols.getDate(), demandeVols.getPays(), demandeVols.getVolume());
-        volsChartersCorrespondantsALaDemande = new ArrayList<>();
-        //VolAssociation vtest = volAssociations.get(0);
-        volsChartersCorrespondantsALaDemande.add(volAssociation);
+        volsChartersCorrespondantsALaDemande = DatabaseService.getVols(TypeVol.Charter, demandeVols.getDate(), demandeVols.getPays(), demandeVols.getVolume());
 
         int tailleListeVols = volsChartersCorrespondantsALaDemande.size();
         logger.info("TAILLE LISTE VOLS : " + tailleListeVols);
@@ -150,7 +141,7 @@ public class VolManagementBehaviorCyclic extends CyclicBehaviour {
                 volAcceptes) {
             String idVol = volAccepte.getUuid();
             Integer capaciteAUtiliser = volAccepte.getCapacite();
-            Seeder.updateCapaciteVol(idVol, capaciteAUtiliser);
+            DatabaseService.updateCapaciteVol(idVol, capaciteAUtiliser);
         }
         //response.setContent(acceptedVols);
         return response;

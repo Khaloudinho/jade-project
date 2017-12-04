@@ -1,7 +1,7 @@
 package behaviors;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import dao.Seeder;
+import dao.DatabaseService;
 import jade.core.Agent;
 import jade.core.behaviours.TickerBehaviour;
 import util.TypeVol;
@@ -15,7 +15,7 @@ public class UpdateFlightsPrices extends TickerBehaviour {
     @Override
     protected void onTick() {
         //On va regarder la liste des vols charters
-        //Seeder.getVols(TypeVol.Charter);
+        //DatabaseService.getVols(TypeVol.Charter);
 
         //On va regarder la date courante
         //On regarde la date de depart

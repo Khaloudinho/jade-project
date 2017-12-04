@@ -8,8 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import containers.CompagnieContainer;
-import dao.Seeder;
+import dao.DatabaseService;
 import jade.core.Agent;
 import jade.core.behaviours.DataStore;
 import jade.domain.FIPAAgentManagement.FailureException;
@@ -65,7 +64,7 @@ public class VolManagementBehavior extends ContractNetResponder {
             demandeVols = mapper.readValue(message, DemandeVols.class);
 
             //On recupere la liste des vols pertinents
-            ArrayList<VolAssociation> volsChartersCorrespondantsALaDemande = Seeder.getVols(TypeVol.Charter, demandeVols.getDate().toString(), demandeVols.getPays(), demandeVols.getVolume());
+            ArrayList<VolAssociation> volsChartersCorrespondantsALaDemande = DatabaseService.getVols(TypeVol.Charter, demandeVols.getDate().toString(), demandeVols.getPays(), demandeVols.getVolume());
             int tailleListeVols = volsChartersCorrespondantsALaDemande.size();
             logger.info("TAILLE LISTE VOLS : "+ tailleListeVols);
 
@@ -128,7 +127,7 @@ public class VolManagementBehavior extends ContractNetResponder {
                 volAcceptes) {
             String idVol = volAccepte.getUuid();
             Integer capaciteAUtiliser = volAccepte.getCapacite();
-            Seeder.updateCapaciteVol(idVol, capaciteAUtiliser);
+            DatabaseService.updateCapaciteVol(idVol, capaciteAUtiliser);
         }
         //response.setContent(acceptedVols);
         return response;
