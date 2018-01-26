@@ -59,14 +59,14 @@ public class DatabaseService {
     Session session = HibernateSessionProvider.getSessionFactory().openSession();
 
     Query queryVolsReguliersCorrespondantsALaDemande = session.createNamedQuery(query, Object[].class);
-    //String associationDatePattern = "MMM dd, yyyy HH:mm:ss a";
-    //java.util.Date dateVol = null;
-    java.util.Date dateVol = new java.util.Date();
-    /*try {
+    String associationDatePattern = "MMM dd, yyyy HH:mm:ss a";
+    java.util.Date dateVol = null;
+    //java.util.Date dateVol = new java.util.Date();
+    try {
       dateVol = new SimpleDateFormat(associationDatePattern).parse(date);
     } catch (ParseException e) {
       e.printStackTrace();
-    }*/
+    }
     System.out.println("DATE : "+dateVol.toString());
     queryVolsReguliersCorrespondantsALaDemande.setParameter("date", new java.sql.Date(dateVol.getTime()));
     queryVolsReguliersCorrespondantsALaDemande.setParameter("pays", pays);
