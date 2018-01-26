@@ -1,11 +1,10 @@
 package agents;
 
-import behaviors.RegisterAgentBehavior;
-import behaviors.vols.VolManagementBehaviorCyclic;
+import behaviors.VolManagementBehavior;
 import jade.core.Agent;
 import util.EnregistrementService;
 
-public class CompagnieCharterAgent extends Agent implements Compagnie {
+public class CompagnieCharterAgent extends Agent {
 
     public static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(CompagnieCharterAgent.class);
 
@@ -15,18 +14,12 @@ public class CompagnieCharterAgent extends Agent implements Compagnie {
     protected void setup(){
         logger.info("Initialisation de l'agent : "+this.getName());
 
-        //EnregistrementService.enregistrer(this,SERVICE_TYPE, SERVICE_NAME);
+        EnregistrementService.enregistrer(this,SERVICE_TYPE, SERVICE_NAME);
+        //EnregistrementService.enregistrer(this,SERVICE_NAME, SERVICE_NAME);
 
-        RegisterAgentBehavior registerAgentBehavior = new RegisterAgentBehavior(this,"compagnie", "Vols-Association");
-        //parallelBehaviour.addSubBehaviour(registerAgentBehavior);
-        this.addBehaviour(registerAgentBehavior);
+        VolManagementBehavior volManagementBehavior = new VolManagementBehavior(this, null);
+        this.addBehaviour(volManagementBehavior);
 
-
-        //VolManagementBehavior volManagementBehavior = new VolManagementBehavior(this, null);
-        //this.addBehaviour(volManagementBehavior);
-
-        VolManagementBehaviorCyclic volManagementBehaviorCyclic = new VolManagementBehaviorCyclic(this);
-        this.addBehaviour(volManagementBehaviorCyclic);
     }
 
     @Override
