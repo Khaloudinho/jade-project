@@ -21,10 +21,10 @@
 - IntelliJ IDEA 2017.2.6
 
 
-# Lancement des projets :
+# Launch Anne's project to communicate with :
 
-## Lancer le mainContainer d'Anne
+## Command to launch Anne's mainContainer 
 mvn -Pjade-main exec:java
 
-## Lancer les agents de Anne
+## Command to launch agents of Anne's project
 mvn -Pjade-agent exec:java
